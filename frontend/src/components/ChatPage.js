@@ -86,7 +86,7 @@ const ChatPage = () => {
 
   return (
     <div className="chat-container">
-      <div className="chat-header">
+      <div className={`chat-header ${companion.id}-chat`}>
         <img 
           src={companion.image} 
           alt={companion.name}
