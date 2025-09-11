@@ -155,6 +155,32 @@ body {
   transition: transform 0.3s ease;
 }
 
+/* Specific adjustments for Sophia and Vanessa companion cards */
+.companion-card.sophia-card .companion-image-container {
+  height: 320px;
+}
+
+.companion-card.sophia-card .companion-image {
+  object-fit: contain;
+  object-position: center top;
+  transform: scale(0.95);
+}
+
+.companion-card.vanessa-card .companion-image-container {
+  height: 320px;
+}
+
+.companion-card.vanessa-card .companion-image {
+  object-fit: contain;
+  object-position: center top;
+  transform: scale(0.95);
+}
+
+/* Aurora stays the same */
+.companion-card.aurora-card .companion-image {
+  object-fit: cover;
+}
+
 .companion-card:hover .companion-image {
   transform: scale(1.05);
 }
