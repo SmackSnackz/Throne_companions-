@@ -228,6 +228,32 @@ body {
   filter: brightness(0.4);
 }
 
+/* Specific adjustments for Sophia and Vanessa to prevent head cropping */
+.chat-header.sophia-chat {
+  height: 350px;
+}
+
+.chat-header.sophia-chat .chat-backdrop {
+  object-fit: contain;
+  object-position: center top;
+  transform: scale(0.9);
+}
+
+.chat-header.vanessa-chat {
+  height: 350px;
+}
+
+.chat-header.vanessa-chat .chat-backdrop {
+  object-fit: contain;
+  object-position: center top;
+  transform: scale(0.9);
+}
+
+/* Aurora stays the same as it's already perfect */
+.chat-header.aurora-chat .chat-backdrop {
+  object-fit: cover;
+}
+
 .chat-header-content {
   position: relative;
   z-index: 2;
