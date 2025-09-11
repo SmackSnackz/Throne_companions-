@@ -46,7 +46,7 @@ const CompanionsPage = () => {
           <Link 
             key={companion.id} 
             to={`/chat/${companion.id}`} 
-            className="companion-card"
+            className={`companion-card ${companion.id}-card`}
             style={{ textDecoration: 'none' }}
           >
             <div className="companion-image-container">
