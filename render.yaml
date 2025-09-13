@@ -13,22 +13,3 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: FRONTEND_URL
-        value: https://throne-frontend.onrender.com
-      - key: STRIPE_PRICE_FRIEND
-        sync: false
-      - key: STRIPE_PRICE_LOVER
-        sync: false
-      - key: STRIPE_PRICE_SPOUSE
-        sync: false
-
-  - type: web
-    name: throne-frontend
-    env: node
-    plan: free
-    rootDir: frontend
-    buildCommand: npm ci && npm run build && npm run export
-    startCommand: npx serve@14 out
-    envVars:
-      - key: NEXT_PUBLIC_BACKEND_URL
-        value: https://throne-backend.onrender.com
