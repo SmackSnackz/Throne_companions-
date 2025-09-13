@@ -22,7 +22,7 @@ services:
       - key: STRIPE_PRICE_SPOUSE
         sync: false
 
-  - type: static_site
+  - type: static
     name: throne-frontend
     rootDir: frontend
     buildCommand: npm ci && npm run build && npm run export
