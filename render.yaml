@@ -8,11 +8,10 @@ services:
     startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
     autoDeploy: true
     healthCheckPath: /health 
-
-  - type: static_site
+  - type: static
     name: throne-frontend
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    publishPath: dist
     autoDeploy: true
