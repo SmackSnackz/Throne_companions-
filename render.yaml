@@ -9,7 +9,7 @@ services:
     autoDeploy: true
     healthCheckPath: /health 
 
-  - type: static
+  - type: static_site
     name: throne-frontend
     plan: free
     rootDir: frontend
