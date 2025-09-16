@@ -9,9 +9,8 @@ services:
     autoDeploy: true
     healthCheckPath: /health 
 
-  - type: web
+  - type: static
     name: throne-frontend
-    env: node
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
