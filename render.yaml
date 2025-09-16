@@ -7,18 +7,7 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
     autoDeploy: true
-    healthCheckPath: /
-
-services:
-  - type: web
-    name: throne-backend
-    env: python
-    plan: free
-    rootDir: backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
-    autoDeploy: true
-    healthCheckPath: /health
+    healthCheckPath: /health 
 
   - type: web
     name: throne-frontend
