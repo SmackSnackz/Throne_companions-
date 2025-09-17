@@ -10,8 +10,8 @@ services:
     healthCheckPath: /health 
   - type: web
     name: throne-frontend
-    runtime: static
+    plan: free
     rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    buildCommand: npm install && npm run build && npm run export
+    staticPublishPath: out
     autoDeploy: true
