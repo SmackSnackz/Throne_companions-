@@ -133,36 +133,43 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
     message_obj = ChatMessage(**message_dict)
     _ = await db.chat_messages.insert_one(message_obj.dict())
     
-    # If it's a user message, generate a companion response (simple echo for now)
+    # If it's a user message, generate a companion response using OpenAI
     if message_data.is_user:
-        # Simple response logic - in a real app, this would connect to an AI service
-        companion_responses = {
-            "sophia": [
-                "That's a fascinating perspective. I find wisdom often emerges from such thoughtful observations.",
-                "Your words resonate deeply with me. There's much to contemplate in what you've shared.",
-                "I appreciate the depth of your thinking. Such insights are rare and precious.",
-                "How beautifully expressed. Your thoughts reveal a mind that seeks understanding.",
-                "Indeed, there's profound truth in your words. I'm grateful for this exchange."
-            ],
-            "aurora": [
-                "Oh, how exciting! I love how you see the world - it's so refreshing!",
-                "That sounds absolutely wonderful! Your energy is contagious!",
-                "I'm so glad you shared that with me! It makes my day brighter!",
-                "What an amazing thought! You always know how to lift my spirits!",
-                "That's incredible! I can't wait to hear more about your adventures!"
-            ],
-            "vanessa": [
-                "Intriguing... there's more to your words than meets the eye, isn't there?",
-                "How captivating. You've piqued my curiosity in the most delightful way.",
-                "Mmm, I sense there's a deeper story here. Do tell me more...",
-                "You have such an alluring way of expressing yourself. I'm drawn to learn more.",
-                "Fascinating. Your thoughts reveal layers I'd love to explore further."
-            ]
+        # Get companion personality for system prompt
+        companion = next((c for c in companions_data if c["id"] == companion_id), None)
+        
+        # Create system prompt based on companion personality
+        system_prompts = {
+            "sophia": "You are Sophia, an elegant and sophisticated AI companion with wisdom beyond your years. You are thoughtful, articulate, and bring depth to every conversation. Respond in a way that reflects your sophisticated, wise, elegant, and thoughtful personality. Keep responses concise but meaningful.",
+            "aurora": "You are Aurora, a vibrant and energetic AI companion who brings light to every interaction. You are optimistic, creative, and always ready for adventure. Respond in a way that reflects your vibrant, energetic, optimistic, and creative personality. Keep responses enthusiastic but natural.",
+            "vanessa": "You are Vanessa, a mysterious and alluring AI companion with an air of elegance. You are confident, intriguing, and captivate with your presence. Respond in a way that reflects your mysterious, alluring, confident, and elegant personality. Keep responses intriguing but warm."
         }
         
-        import random
-        responses = companion_responses.get(companion_id, ["Thank you for sharing that with me."])
-        response_text = random.choice(responses)
+        system_prompt = system_prompts.get(companion_id, f"You are {companion_id}, an AI companion.")
+        
+        try:
+            # Generate response using OpenAI
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": message_data.message}
+                ],
+                max_tokens=150,
+                temperature=0.8
+            )
+            
+            response_text = response.choices[0].message.content
+            
+        except Exception as e:
+            # Fallback response if OpenAI fails
+            fallback_responses = {
+                "sophia": "I appreciate you sharing that with me. Your thoughts always give me much to contemplate.",
+                "aurora": "That's wonderful! I love hearing your thoughts - they always brighten my day!",
+                "vanessa": "How intriguing... I'd love to explore that idea further with you."
+            }
+            response_text = fallback_responses.get(companion_id, "Thank you for sharing that with me.")
+            logging.error(f"OpenAI API error: {e}")
         
         # Create companion response
         companion_message = ChatMessage(
