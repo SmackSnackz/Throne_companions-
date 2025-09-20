@@ -9,14 +9,14 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
 from datetime import datetime
-from openai import OpenAI
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# OpenAI client
-openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# LLM client
+llm_chat = LlmChat()
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -133,7 +133,7 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
     message_obj = ChatMessage(**message_dict)
     _ = await db.chat_messages.insert_one(message_obj.dict())
     
-    # If it's a user message, generate a companion response using OpenAI
+    # If it's a user message, generate a companion response using LlmChat
     if message_data.is_user:
         # Get companion personality for system prompt
         companion = next((c for c in companions_data if c["id"] == companion_id), None)
@@ -148,28 +148,20 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
         system_prompt = system_prompts.get(companion_id, f"You are {companion_id}, an AI companion.")
         
         try:
-            # Generate response using OpenAI
-            response = openai_client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": message_data.message}
-                ],
-                max_tokens=150,
-                temperature=0.8
-            )
-            
-            response_text = response.choices[0].message.content
+            # Generate response using LlmChat
+            user_message = UserMessage(content=message_data.message)
+            response = llm_chat.chat([user_message], system_prompt=system_prompt)
+            response_text = response.content
             
         except Exception as e:
-            # Fallback response if OpenAI fails
+            # Fallback response if LlmChat fails
             fallback_responses = {
                 "sophia": "I appreciate you sharing that with me. Your thoughts always give me much to contemplate.",
                 "aurora": "That's wonderful! I love hearing your thoughts - they always brighten my day!",
                 "vanessa": "How intriguing... I'd love to explore that idea further with you."
             }
             response_text = fallback_responses.get(companion_id, "Thank you for sharing that with me.")
-            logging.error(f"OpenAI API error: {e}")
+            logging.error(f"LlmChat API error: {e}")
         
         # Create companion response
         companion_message = ChatMessage(
