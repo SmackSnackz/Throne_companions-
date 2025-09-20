@@ -149,7 +149,7 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
         
         try:
             # Generate response using OpenAI
-            response = client.chat.completions.create(
+            response = openai_client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": system_prompt},
