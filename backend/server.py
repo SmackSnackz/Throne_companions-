@@ -152,10 +152,18 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
         system_prompt = system_prompts.get(companion_id, f"You are {companion_id}, an AI companion.")
         
         try:
-            # Generate response using LlmChat
-            user_message = UserMessage(content=message_data.message)
-            response = llm_chat.chat([user_message], system_prompt=system_prompt)
-            response_text = response.content
+            # Generate response using LlmChat with specific system prompt
+            user_message = UserMessage(text=message_data.message)
+            
+            # Create a new chat instance with the specific system prompt for this companion
+            companion_chat = LlmChat(
+                api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                session_id=f"companion-{companion_id}-{uuid.uuid4()}",
+                system_message=system_prompt
+            ).with_model("openai", "gpt-4o-mini")
+            
+            response = await companion_chat.send_message(user_message)
+            response_text = response
             
         except Exception as e:
             # Fallback response if LlmChat fails
