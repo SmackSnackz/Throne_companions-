@@ -15,8 +15,12 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# LLM client
-llm_chat = LlmChat()
+# LLM client using Emergent LLM key
+llm_chat = LlmChat(
+    api_key=os.environ.get("EMERGENT_LLM_KEY"),
+    session_id="throne-companions",
+    system_message="You are an AI companion."
+).with_model("openai", "gpt-4o-mini")
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
