@@ -422,7 +422,469 @@ body {
   color: #ff6b6b;
 }
 
+/* Compliance Flow Styles */
+.compliance-flow {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--throne-primary) 0%, var(--throne-secondary) 50%, var(--throne-accent) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.compliance-container {
+  max-width: 800px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.compliance-header {
+  text-align: center;
+  padding: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.compliance-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 8px rgba(244, 196, 48, 0.3));
+}
+
+.compliance-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--throne-gold);
+  margin-bottom: 0.5rem;
+}
+
+.compliance-subtitle {
+  color: var(--throne-silver);
+  font-size: 1.1rem;
+}
+
+.compliance-progress {
+  padding: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 1;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--throne-silver);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.progress-step.active .step-number {
+  background: var(--throne-gold);
+  color: var(--throne-text-dark);
+}
+
+.progress-step.completed .step-number {
+  background: var(--throne-gold);
+  color: var(--throne-text-dark);
+}
+
+.progress-step.completed .step-number::after {
+  content: '✓';
+}
+
+.step-title {
+  font-size: 0.9rem;
+  color: var(--throne-silver);
+  text-align: center;
+}
+
+.progress-step.active .step-title,
+.progress-step.completed .step-title {
+  color: var(--throne-gold);
+}
+
+.compliance-content {
+  padding: 2rem;
+}
+
+/* Age Verification Styles */
+.verification-step {
+  color: var(--throne-text-light);
+}
+
+.step-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.step-header h2 {
+  font-size: 2rem;
+  color: var(--throne-gold);
+  margin-bottom: 0.5rem;
+}
+
+.step-header p {
+  color: var(--throne-silver);
+  font-size: 1.1rem;
+}
+
+.warning-notice {
+  display: flex;
+  align-items: flex-start;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.warning-icon {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.warning-text strong {
+  color: var(--throne-gold);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.verification-form {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.checkbox-container {
+  margin-bottom: 1.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.checkbox-input {
+  display: none;
+}
+
+.checkbox-checkmark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--throne-gold);
+  border-radius: 4px;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.checkbox-input:checked + .checkbox-checkmark {
+  background: var(--throne-gold);
+}
+
+.checkbox-input:checked + .checkbox-checkmark::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--throne-text-dark);
+  font-weight: bold;
+}
+
+.checkbox-text {
+  color: var(--throne-text-light);
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.error-icon {
+  margin-right: 0.5rem;
+}
+
+.button-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.continue-button,
+.accept-button,
+.acknowledge-button {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.continue-button.enabled,
+.accept-button.enabled,
+.acknowledge-button.enabled {
+  background: linear-gradient(45deg, var(--throne-gold), #e6b800);
+  color: var(--throne-text-dark);
+}
+
+.continue-button.disabled,
+.accept-button.disabled,
+.acknowledge-button.disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.continue-button.enabled:hover,
+.accept-button.enabled:hover,
+.acknowledge-button.enabled:hover {
+  background: linear-gradient(45deg, #ffdd44, var(--throne-gold));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(244, 196, 48, 0.3);
+}
+
+.exit-option {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.exit-option p {
+  color: var(--throne-silver);
+}
+
+.exit-link {
+  color: var(--throne-gold);
+  text-decoration: none;
+}
+
+.exit-link:hover {
+  text-decoration: underline;
+}
+
+/* Terms and Privacy Styles */
+.terms-step {
+  color: var(--throne-text-light);
+}
+
+.document-container {
+  max-height: 400px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.document-section h3 {
+  color: var(--throne-gold);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(244, 196, 48, 0.3);
+  padding-bottom: 0.5rem;
+}
+
+.document-section h4 {
+  color: var(--throne-silver);
+  font-size: 1.2rem;
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.document-section p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.document-section ul {
+  margin: 0.5rem 0 1rem 1.5rem;
+}
+
+.document-section li {
+  margin-bottom: 0.3rem;
+  line-height: 1.5;
+}
+
+.acceptance-section {
+  text-align: center;
+}
+
+.scroll-reminder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--throne-silver);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.scroll-icon {
+  margin-right: 0.5rem;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+/* DMCA Policy Styles */
+.dmca-step {
+  color: var(--throne-text-light);
+}
+
+.policy-section {
+  margin-bottom: 2rem;
+}
+
+.policy-section h3 {
+  color: var(--throne-gold);
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.policy-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.policy-box p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.policy-box ul {
+  margin: 0.5rem 0 1rem 1.5rem;
+}
+
+.policy-box li {
+  margin-bottom: 0.3rem;
+  line-height: 1.5;
+}
+
+.contact-info {
+  background: rgba(244, 196, 48, 0.1);
+  border: 1px solid rgba(244, 196, 48, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.contact-info h4 {
+  color: var(--throne-gold);
+  margin-bottom: 0.5rem;
+}
+
+.contact-info a {
+  color: var(--throne-gold);
+  text-decoration: none;
+}
+
+.contact-info a:hover {
+  text-decoration: underline;
+}
+
+.acknowledgment-section {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Responsive Design */
+@media (max-width: 768px) {
+  .compliance-flow {
+    padding: 1rem;
+  }
+  
+  .compliance-container {
+    max-width: none;
+  }
+  
+  .compliance-header,
+  .compliance-progress,
+  .compliance-content {
+    padding: 1.5rem;
+  }
+  
+  .compliance-title {
+    font-size: 2rem;
+  }
+  
+  .progress-bar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .progress-bar::before {
+    display: none;
+  }
+  
+  .document-container {
+    max-height: 300px;
+    padding: 1.5rem;
+  }
+  
+  .checkbox-label {
+    align-items: flex-start;
+  }
+  
+  .checkbox-checkmark {
+    margin-top: 2px;
+  }
+}
 @media (max-width: 768px) {
   .main-title {
     font-size: 2.5rem;
