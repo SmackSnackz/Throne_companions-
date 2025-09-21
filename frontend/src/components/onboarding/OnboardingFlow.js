@@ -5,11 +5,10 @@ import CompanionSelection from "./CompanionSelection";
 import TierSelection from "./OnboardingTierSelection";
 import FirstGuidedChat from "./FirstGuidedChat";
 
-const OnboardingFlow = () => {
+const OnboardingFlow = ({ onOnboardingComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [onboardingData, setOnboardingData] = useState({});
   const [startTime] = useState(Date.now());
-  const navigate = useNavigate();
 
   // Onboarding steps
   const steps = [
@@ -33,8 +32,10 @@ const OnboardingFlow = () => {
       if (progress.chosen_companion) lastStep = 3;
       if (progress.chosen_tier) lastStep = 4;
       if (progress.first_chat_started) {
-        // Onboarding complete, redirect to main app
-        navigate('/companions');
+        // Onboarding complete, notify parent
+        if (onOnboardingComplete) {
+          onOnboardingComplete();
+        }
         return;
       }
       
@@ -44,7 +45,7 @@ const OnboardingFlow = () => {
 
     // Track onboarding start
     trackOnboardingEvent('onboarding_started');
-  }, [navigate]);
+  }, [onOnboardingComplete]);
 
   const trackOnboardingEvent = (event, data = {}) => {
     // In production, this would send to analytics
