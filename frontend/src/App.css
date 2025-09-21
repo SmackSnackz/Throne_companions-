@@ -71,6 +71,13 @@ body {
   font-style: italic;
 }
 
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .cta-button {
   padding: 1rem 2.5rem;
   font-size: 1.2rem;
@@ -86,10 +93,23 @@ body {
   box-shadow: 0 8px 16px rgba(244, 196, 48, 0.3);
 }
 
+.cta-button.secondary {
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  color: var(--throne-text-light);
+  border: 2px solid var(--throne-gold);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
 .cta-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 24px rgba(244, 196, 48, 0.4);
   background: linear-gradient(45deg, #ffdd44, var(--throne-gold));
+}
+
+.cta-button.secondary:hover {
+  background: linear-gradient(45deg, var(--throne-gold), #e6b800);
+  color: var(--throne-text-dark);
+  border-color: var(--throne-gold);
 }
 
 /* Companions Grid Styles */
