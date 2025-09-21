@@ -56,63 +56,12 @@ DEFAULT_USER = {
 }
 
 
-# Define Models
-class StatusCheck(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
-
-class StatusCheckCreate(BaseModel):
-    client_name: str
-
-class Companion(BaseModel):
-    id: str
-    name: str
-    description: str
-    image: str
-    personality: str
-
-class ChatMessage(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    companion_id: str
-    message: str
-    is_user: bool
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
-
-class ChatMessageCreate(BaseModel):
-    companion_id: str
-    message: str
-    is_user: bool
-
-# Predefined companions data
-companions_data = [
-    {
-        "id": "sophia",
-        "name": "Sophia",
-        "description": "An elegant and sophisticated companion with wisdom beyond her years. Sophia is thoughtful, articulate, and brings depth to every conversation.",
-        "image": "/avatars/sophia.png",
-        "personality": "sophisticated, wise, elegant, thoughtful"
-    },
-    {
-        "id": "aurora",
-        "name": "Aurora",
-        "description": "A vibrant and energetic companion who brings light to every interaction. Aurora is optimistic, creative, and always ready for adventure.",
-        "image": "/avatars/aurora.png",
-        "personality": "vibrant, energetic, optimistic, creative"
-    },
-    {
-        "id": "vanessa",
-        "name": "Vanessa",
-        "description": "A mysterious and alluring companion with an air of elegance. Vanessa is confident, intriguing, and captivates with her presence.",
-        "image": "/avatars/vanessa.png",
-        "personality": "mysterious, alluring, confident, elegant"
-    }
-]
+# Remove the old models and companions data - now using separate files
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
-    return {"message": "Welcome to Throne Companions"}
+    return {"message": "Welcome to Throne Companions", "tiers": list(TIER_CONFIGS.keys())}
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
@@ -125,6 +74,43 @@ async def create_status_check(input: StatusCheckCreate):
 async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
+
+# Tier system endpoints
+@api_router.get("/tiers")
+async def get_tiers():
+    return TIER_CONFIGS
+
+@api_router.get("/user")
+async def get_user():
+    # In production, get user from authentication
+    return DEFAULT_USER
+
+@api_router.put("/user", response_model=dict)
+async def update_user(user_update: UserUpdate):
+    # In production, update authenticated user
+    global DEFAULT_USER
+    if user_update.tier:
+        DEFAULT_USER["tier"] = user_update.tier
+        # Update features based on tier
+        tier_config = get_tier_config(user_update.tier)
+        DEFAULT_USER["memory_retention_days"] = tier_config["memory_retention_days"]
+        
+        # Enable features based on tier
+        if user_update.tier == "apprentice":
+            DEFAULT_USER["features"]["voice"] = True
+            DEFAULT_USER["features"]["visuals"] = True
+        elif user_update.tier == "regent":
+            DEFAULT_USER["features"]["voice"] = True
+            DEFAULT_USER["features"]["visuals"] = True
+            DEFAULT_USER["features"]["finance_tools"] = True
+        elif user_update.tier == "sovereign":
+            for feature in DEFAULT_USER["features"]:
+                DEFAULT_USER["features"][feature] = True
+    
+    if user_update.chosen_companion:
+        DEFAULT_USER["chosen_companion"] = user_update.chosen_companion
+    
+    return DEFAULT_USER
 
 @api_router.get("/companions", response_model=List[Companion])
 async def get_companions():
