@@ -390,6 +390,7 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
         
         if not use_starter_content:
             # Regular AI-generated response
+            start_time = datetime.utcnow()
             try:
                 # Generate response using LlmChat with tier-specific system prompt
                 user_message = UserMessage(text=message_data.message)
@@ -404,7 +405,34 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
                 response = await companion_chat.send_message(user_message)
                 response_text = response
                 
+                # Track successful LLM request
+                end_time = datetime.utcnow()
+                latency_ms = int((end_time - start_time).total_seconds() * 1000)
+                
+                await analytics.track_llm_request(
+                    user_id=user["id"],
+                    session_id=session_id,
+                    latency_ms=latency_ms,
+                    success=True,
+                    companion=companion_id,
+                    tier=user["tier"]
+                )
+                
             except Exception as e:
+                # Track failed LLM request
+                end_time = datetime.utcnow()
+                latency_ms = int((end_time - start_time).total_seconds() * 1000)
+                
+                await analytics.track_llm_request(
+                    user_id=user["id"],
+                    session_id=session_id,
+                    latency_ms=latency_ms,
+                    success=False,
+                    error_code=str(type(e).__name__),
+                    companion=companion_id,
+                    tier=user["tier"]
+                )
+                
                 # Fallback response based on tier and companion
                 tier = user["tier"]
                 fallback_responses = {
