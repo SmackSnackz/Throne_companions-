@@ -105,8 +105,10 @@ const OnboardingFlow = ({ onOnboardingComplete }) => {
       completion_time: completionTime
     });
     
-    // Redirect to main chat interface
-    navigate(`/chat/${onboardingData.chosen_companion}`);
+    // Notify parent that onboarding is complete
+    if (onOnboardingComplete) {
+      onOnboardingComplete();
+    }
   };
 
   const renderCurrentStep = () => {
