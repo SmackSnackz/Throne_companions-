@@ -13,74 +13,62 @@ const DMCAPolicy = ({ onComplete }) => {
   return (
     <div className="dmca-step">
       <div className="step-header">
-        <h2>Content Policy & DMCA Compliance</h2>
-        <p>Please acknowledge our content policy and copyright compliance requirements.</p>
+        <h2>DMCA & Content Policy</h2>
+        <p>Please read and acknowledge our content policy and copyright compliance requirements.</p>
       </div>
 
       <div className="dmca-content">
         <div className="policy-section">
-          <h3>🚫 Prohibited Content</h3>
+          <h3>1. Copyright Compliance</h3>
           <div className="policy-box">
-            <p><strong>The following content is strictly prohibited on Throne Companions:</strong></p>
+            <p>We respect the intellectual property rights of others and require all users to do the same.</p>
+          </div>
+        </div>
+
+        <div className="policy-section">
+          <h3>2. Prohibited Content</h3>
+          <div className="policy-box">
+            <p>You may not upload, share, or distribute:</p>
             <ul>
-              <li>Copyrighted material without permission</li>
-              <li>Illegal content of any kind</li>
-              <li>Content that infringes on intellectual property rights</li>
-              <li>Harassment, threats, or abusive content</li>
-              <li>Spam or commercial solicitation</li>
-              <li>Malicious software or harmful code</li>
+              <li>Copyrighted material without authorization</li>
+              <li>Illegal or abusive content</li>
+              <li>Content that violates privacy rights</li>
+              <li>Material harmful to minors or promoting hate or violence</li>
             </ul>
           </div>
         </div>
 
         <div className="policy-section">
-          <h3>⚖️ DMCA Compliance</h3>
+          <h3>3. DMCA Takedown Requests</h3>
           <div className="policy-box">
-            <p><strong>Digital Millennium Copyright Act (DMCA) Notice:</strong></p>
-            <p>We respect intellectual property rights and comply with the DMCA. If you believe your copyrighted work has been used inappropriately:</p>
+            <p>If you believe content on this platform infringes your copyright, please send a DMCA notice to:</p>
             
             <div className="contact-info">
-              <h4>File a DMCA Takedown Request:</h4>
               <p><strong>Email:</strong> <a href="mailto:dmca@thronecompanions.com">dmca@thronecompanions.com</a></p>
-              <p><strong>Subject Line:</strong> DMCA Takedown Request</p>
             </div>
 
-            <h4>Required Information:</h4>
+            <p><strong>Your notice must include:</strong></p>
             <ul>
-              <li>Description of the copyrighted work claimed to be infringed</li>
-              <li>Location of the infringing material on our platform</li>
-              <li>Your contact information (name, address, phone, email)</li>
-              <li>Statement of good faith belief that use is not authorized</li>
-              <li>Statement that information is accurate and you are authorized to act</li>
-              <li>Your physical or electronic signature</li>
+              <li>Identification of the copyrighted work</li>
+              <li>Identification of the infringing material (with URL if available)</li>
+              <li>Your contact information</li>
+              <li>A statement under penalty of perjury that you are authorized to act</li>
+              <li>Your electronic or physical signature</li>
             </ul>
           </div>
         </div>
 
         <div className="policy-section">
-          <h3>🛡️ User Responsibility</h3>
+          <h3>4. Enforcement</h3>
           <div className="policy-box">
-            <p><strong>By using Throne Companions, you agree to:</strong></p>
-            <ul>
-              <li>Only share content you own or have permission to use</li>
-              <li>Respect others' intellectual property rights</li>
-              <li>Report any copyright infringement you discover</li>
-              <li>Comply with all applicable laws and regulations</li>
-              <li>Accept responsibility for all content you create or share</li>
-            </ul>
+            <p>We may remove or disable access to alleged infringing content and may terminate repeat offenders' accounts.</p>
           </div>
         </div>
 
         <div className="policy-section">
-          <h3>⚡ Enforcement</h3>
+          <h3>5. User Acknowledgment</h3>
           <div className="policy-box">
-            <p>Violations of this policy may result in:</p>
-            <ul>
-              <li>Content removal</li>
-              <li>Account suspension or termination</li>
-              <li>Legal action when appropriate</li>
-              <li>Cooperation with law enforcement</li>
-            </ul>
+            <p>By continuing, you acknowledge that you have read and agree to this DMCA & Content Policy.</p>
           </div>
         </div>
 
@@ -95,7 +83,7 @@ const DMCAPolicy = ({ onComplete }) => {
               />
               <span className="checkbox-checkmark"></span>
               <span className="checkbox-text">
-                <strong>I acknowledge and agree to comply</strong> with the Content Policy and DMCA requirements. I understand that violations may result in account termination.
+                <strong>I acknowledge and agree to comply</strong> with the DMCA & Content Policy. I understand that violations may result in account termination.
               </span>
             </label>
           </div>
