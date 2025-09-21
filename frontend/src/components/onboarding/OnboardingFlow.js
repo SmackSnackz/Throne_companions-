@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import WelcomeScreen from "./WelcomeScreen";
 import ComplianceFlow from "../compliance/ComplianceFlow";
 import CompanionSelection from "./CompanionSelection";
