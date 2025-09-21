@@ -66,19 +66,41 @@ const FirstGuidedChat = ({ companion, tier, onChatStarted }) => {
         const companionResponse = await axios.get(`${API}/companions/${companion}`);
         setCompanionData(companionResponse.data);
 
-        // Create initial greeting message
-        const introScript = companionIntros[companion]?.[tier] || companionIntros[companion]?.novice;
-        const welcomeMessage = {
-          id: `welcome-${Date.now()}`,
-          companion_id: companion,
-          message: introScript,
-          is_user: false,
-          timestamp: new Date().toISOString(),
-          tier: tier,
-          mode: "text"
-        };
+        // Get starter pack content for this companion and tier
+        try {
+          const starterPackResponse = await axios.get(`${API}/companions/${companion}/starter-pack/${tier}`);
+          const starterPack = starterPackResponse.data;
+          
+          // Use intro from starter pack
+          const introScript = starterPack.intro || companionIntros[companion]?.[tier] || companionIntros[companion]?.novice;
+          
+          const welcomeMessage = {
+            id: `welcome-${Date.now()}`,
+            companion_id: companion,
+            message: introScript,
+            is_user: false,
+            timestamp: new Date().toISOString(),
+            tier: tier,
+            mode: "text"
+          };
 
-        setMessages([welcomeMessage]);
+          setMessages([welcomeMessage]);
+        } catch (packError) {
+          // Fallback to hardcoded intros if starter pack fails
+          const introScript = companionIntros[companion]?.[tier] || companionIntros[companion]?.novice;
+          const welcomeMessage = {
+            id: `welcome-${Date.now()}`,
+            companion_id: companion,
+            message: introScript,
+            is_user: false,
+            timestamp: new Date().toISOString(),
+            tier: tier,
+            mode: "text"
+          };
+
+          setMessages([welcomeMessage]);
+        }
+
         setIsReady(true);
 
         // Track first chat initialization
