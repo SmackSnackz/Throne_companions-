@@ -85,6 +85,51 @@ async def get_user():
     # In production, get user from authentication
     return DEFAULT_USER
 
+# Onboarding tracking endpoints
+@api_router.post("/onboarding/track")
+async def track_onboarding_event(event_data: dict):
+    """Track onboarding events for analytics"""
+    # In production, this would send to proper analytics service
+    event_record = {
+        "id": str(uuid.uuid4()),
+        "event": event_data.get("event"),
+        "step": event_data.get("step"),
+        "data": event_data.get("data", {}),
+        "timestamp": datetime.utcnow(),
+        "user_id": "demo_user"  # In production, get from auth
+    }
+    
+    _ = await db.onboarding_events.insert_one(event_record)
+    
+    return {"status": "tracked", "event": event_data.get("event")}
+
+@api_router.get("/onboarding/metrics")
+async def get_onboarding_metrics():
+    """Get onboarding completion metrics"""
+    try:
+        # Basic metrics - in production would be more sophisticated
+        total_starts = await db.onboarding_events.count_documents({"event": "onboarding_started"})
+        total_completions = await db.onboarding_events.count_documents({"event": "onboarding_completed"})
+        
+        completion_rate = (total_completions / total_starts * 100) if total_starts > 0 else 0
+        
+        # Get completion times
+        completion_events = await db.onboarding_events.find({"event": "onboarding_completed"}).to_list(100)
+        avg_completion_time = 0
+        if completion_events:
+            times = [event.get("data", {}).get("completion_time_ms", 0) for event in completion_events]
+            avg_completion_time = sum(times) / len(times) / 1000  # Convert to seconds
+        
+        return {
+            "total_starts": total_starts,
+            "total_completions": total_completions,
+            "completion_rate": round(completion_rate, 2),
+            "avg_completion_time_seconds": round(avg_completion_time, 2)
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+# Update user endpoint to handle onboarding data
 @api_router.put("/user", response_model=dict)
 async def update_user(user_update: UserUpdate):
     # In production, update authenticated user
@@ -94,6 +139,7 @@ async def update_user(user_update: UserUpdate):
         # Update features based on tier
         tier_config = get_tier_config(user_update.tier)
         DEFAULT_USER["memory_retention_days"] = tier_config["memory_retention_days"]
+        DEFAULT_USER["prompting_mastery"] = tier_config["prompting_mastery"]
         
         # Enable features based on tier
         if user_update.tier == "apprentice":
