@@ -422,6 +422,46 @@ body {
   color: #ff6b6b;
 }
 
+/* Loading Screen Styles */
+.loading-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--throne-primary) 0%, var(--throne-secondary) 50%, var(--throne-accent) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-container {
+  text-align: center;
+}
+
+.loading-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(244, 196, 48, 0.3));
+  animation: pulse 2s infinite;
+  margin-bottom: 2rem;
+}
+
+.loading-text {
+  color: var(--throne-gold);
+  font-size: 1.2rem;
+  font-weight: bold;
+  animation: fadeInOut 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
 /* Compliance Flow Styles */
 .compliance-flow {
   min-height: 100vh;
