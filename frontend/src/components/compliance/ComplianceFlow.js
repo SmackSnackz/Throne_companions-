@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import AgeVerification from "./AgeVerification";
 import TermsAndPrivacy from "./TermsAndPrivacy";
 import DMCAPolicy from "./DMCAPolicy";
@@ -11,8 +10,6 @@ const ComplianceFlow = ({ onComplianceComplete }) => {
     termsAccepted: false,
     dmcaAcknowledged: false
   });
-
-  const navigate = useNavigate();
 
   // Check if user has already completed compliance
   useEffect(() => {
