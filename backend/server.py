@@ -352,6 +352,22 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
             response_text = f"{intro}\n\n{ritual}"
             use_starter_content = True
             
+            # Track first chat started and ritual delivery
+            await analytics.track_first_chat_started(
+                user_id=user["id"],
+                session_id=session_id,
+                companion=companion_id,
+                tier=user["tier"]
+            )
+            
+            await analytics.track_first_ritual_delivered(
+                user_id=user["id"],
+                session_id=session_id,
+                ritual_id=f"{companion_id}_{user['tier']}_starter",
+                companion=companion_id,
+                tier=user["tier"]
+            )
+            
             # Track starter ritual delivery
             await track_content_event("starter_ritual_delivered", {
                 "companion": companion_id,
