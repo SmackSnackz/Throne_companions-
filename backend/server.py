@@ -292,9 +292,21 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
 
     # Track starter ritual delivery
     is_first_message = False
+    session_id = f"session-{uuid.uuid4()}"
     
     # If it's a user message, generate a companion response
     if message_data.is_user:
+        # Track message sent
+        await analytics.track_message_sent(
+            user_id=user["id"],
+            session_id=session_id,
+            message_id=str(message_obj.id),
+            length_chars=len(message_data.message),
+            mode=message_data.mode,
+            companion=companion_id,
+            tier=user["tier"]
+        )
+        
         # Check if this is the first conversation (no previous messages)
         existing_messages = await db.chat_messages.find({
             "companion_id": companion_id,
