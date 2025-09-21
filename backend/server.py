@@ -40,6 +40,9 @@ app = FastAPI()
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Initialize analytics tracker
+analytics = get_analytics_tracker(db)
+
 # Default user for demo purposes - in production this would come from authentication
 DEFAULT_USER = {
     "id": "demo_user",
