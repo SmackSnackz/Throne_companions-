@@ -5,11 +5,15 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+
+# Import tier system
+from tier_configs import TIER_CONFIGS, get_tier_config, mode_required_tier
+from tier_system import build_behavior_config, render_upgrade_cta, check_feature_access, get_memory_expiry_date
+from models import *
 
 
 ROOT_DIR = Path(__file__).parent
