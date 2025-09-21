@@ -451,8 +451,12 @@ async def get_content_metrics():
     except Exception as e:
         return {"error": str(e)}
 
-# Include the router in the main app
+# Include the API router and dashboard in the main app
 app.include_router(api_router)
+
+# Add dashboard routes
+dashboard_routes = create_dashboard_routes(db)
+app.include_router(dashboard_routes)
 
 app.add_middleware(
     CORSMiddleware,
