@@ -284,9 +284,20 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
     message_dict["tier"] = user["tier"]
     message_obj = ChatMessage(**message_dict)
     _ = await db.chat_messages.insert_one(message_obj.dict())
+
+    # Track starter ritual delivery
+    is_first_message = False
     
     # If it's a user message, generate a companion response
     if message_data.is_user:
+        # Check if this is the first conversation (no previous messages)
+        existing_messages = await db.chat_messages.find({
+            "companion_id": companion_id,
+            "is_user": False
+        }).to_list(5)
+        
+        is_first_message = len(existing_messages) == 0
+
         # Check for upgrade requirement
         if request_result["upgrade_required"]:
             # Create upgrade CTA response
@@ -303,31 +314,79 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
         # Get behavior config for AI response
         behavior_config = request_result["behavior_config"]
         
-        try:
-            # Generate response using LlmChat with tier-specific system prompt
-            user_message = UserMessage(text=message_data.message)
+        # Determine if we should use starter content
+        use_starter_content = False
+        response_text = ""
+        
+        if is_first_message:
+            # First message - use intro + starter ritual
+            intro = get_intro_script(companion_id, user["tier"])
+            ritual = get_starter_ritual(companion_id, user["tier"])
+            response_text = f"{intro}\n\n{ritual}"
+            use_starter_content = True
             
-            # Create a new chat instance with the tier-specific system prompt
-            companion_chat = LlmChat(
-                api_key=os.environ.get("EMERGENT_LLM_KEY"),
-                session_id=f"companion-{companion_id}-{user['id']}-{uuid.uuid4()}",
-                system_message=behavior_config["system_prompt"]
-            ).with_model("openai", "gpt-4o-mini")
+            # Track starter ritual delivery
+            await track_content_event("starter_ritual_delivered", {
+                "companion": companion_id,
+                "tier": user["tier"],
+                "ritual_type": "first_chat"
+            })
             
-            response = await companion_chat.send_message(user_message)
-            response_text = response
+        elif not message_data.message.strip() or len(message_data.message.strip()) < 3:
+            # Unclear or empty input - use fallback prompt
+            fallback_prompt = get_fallback_prompt(companion_id, user["tier"])
+            response_text = f"I sense you might need some guidance. {fallback_prompt}"
+            use_starter_content = True
             
-        except Exception as e:
-            # Fallback response based on tier
-            tier = user["tier"]
-            fallback_responses = {
-                "novice": f"I'm here to help briefly. Let me give you one clear action.",
-                "apprentice": f"I'm ready to provide you with a detailed exercise and actionable steps.",
-                "regent": f"I can offer you comprehensive guidance and track your progress over time.",
-                "sovereign": f"I'm prepared for deep co-creation and personalized assistance."
-            }
-            response_text = fallback_responses.get(tier, "Thank you for sharing that with me.")
-            logging.error(f"LLM API error: {e}")
+            # Track fallback prompt usage
+            await track_content_event("fallback_prompt_used", {
+                "companion": companion_id,
+                "tier": user["tier"],
+                "prompt_type": "unclear_input"
+            })
+        
+        if not use_starter_content:
+            # Regular AI-generated response
+            try:
+                # Generate response using LlmChat with tier-specific system prompt
+                user_message = UserMessage(text=message_data.message)
+                
+                # Create a new chat instance with the tier-specific system prompt
+                companion_chat = LlmChat(
+                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                    session_id=f"companion-{companion_id}-{user['id']}-{uuid.uuid4()}",
+                    system_message=behavior_config["system_prompt"]
+                ).with_model("openai", "gpt-4o-mini")
+                
+                response = await companion_chat.send_message(user_message)
+                response_text = response
+                
+            except Exception as e:
+                # Fallback response based on tier and companion
+                tier = user["tier"]
+                fallback_responses = {
+                    "sophia": {
+                        "novice": "Let me offer you a moment of reflection. What's truly on your heart right now?",
+                        "apprentice": "I sense depth in your words. Tell me more about what you're experiencing.",
+                        "regent": "Your thoughts intrigue me. Let's explore this together and create something meaningful.",
+                        "sovereign": "I feel the wisdom you're seeking. Shall we co-create an insight that serves your highest good?"
+                    },
+                    "aurora": {
+                        "novice": "I'm here to help you find clarity. What's one thing you want to focus on right now?",
+                        "apprentice": "Your energy is calling for growth! What creative challenge excites you today?",
+                        "regent": "I see your potential shining. Let's build something amazing together - what inspires you?",
+                        "sovereign": "Your creative spirit is limitless! What reality shall we reshape together?"
+                    },
+                    "vanessa": {
+                        "novice": "Keep it real with me, love. What's actually going on?",
+                        "apprentice": "I see through the surface, darling. What truth are you avoiding?",
+                        "regent": "Your power is calling. What empire are you ready to build?",
+                        "sovereign": "I sense your depth, beautiful. What legend shall we craft together?"
+                    }
+                }
+                
+                response_text = fallback_responses.get(companion_id, {}).get(tier, "I'm here to support you on your journey. What would you like to explore?")
+                logging.error(f"LLM API error: {e}")
         
         # Create companion response with tier info
         companion_message = ChatMessage(
@@ -341,6 +400,51 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
         _ = await db.chat_messages.insert_one(companion_message.dict())
     
     return message_obj
+
+async def track_content_event(event_type, data):
+    """Track content pack usage events"""
+    event_record = {
+        "id": str(uuid.uuid4()),
+        "event_type": event_type,
+        "data": data,
+        "timestamp": datetime.utcnow(),
+        "user_id": "demo_user"  # In production, get from auth
+    }
+    
+    try:
+        _ = await db.content_events.insert_one(event_record)
+    except Exception as e:
+        logging.error(f"Error tracking content event: {e}")
+
+# Content pack endpoints
+@api_router.get("/companions/{companion_id}/starter-pack/{tier}")
+async def get_companion_starter_pack_endpoint(companion_id: str, tier: str):
+    """Get starter pack content for a companion at specific tier"""
+    from content_packs import get_companion_starter_pack
+    pack = get_companion_starter_pack(companion_id, tier)
+    if not pack:
+        raise HTTPException(status_code=404, detail="Starter pack not found")
+    return pack
+
+@api_router.get("/content/metrics")
+async def get_content_metrics():
+    """Get content pack engagement metrics"""
+    try:
+        total_rituals_delivered = await db.content_events.count_documents({"event_type": "starter_ritual_delivered"})
+        total_fallbacks_used = await db.content_events.count_documents({"event_type": "fallback_prompt_used"})
+        
+        # Get ritual delivery rate (% of first chats that got rituals)
+        total_first_chats = await db.chat_messages.count_documents({"is_user": False}) # Approximate
+        ritual_delivery_rate = (total_rituals_delivered / max(total_first_chats, 1)) * 100
+        
+        return {
+            "total_rituals_delivered": total_rituals_delivered,
+            "total_fallbacks_used": total_fallbacks_used,
+            "ritual_delivery_rate": round(ritual_delivery_rate, 2),
+            "content_engagement": "active"
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 # Include the router in the main app
 app.include_router(api_router)
