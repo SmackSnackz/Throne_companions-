@@ -5,6 +5,7 @@ import ComplianceFlow from "./components/compliance/ComplianceFlow";
 import HomePage from "./components/HomePage";
 import CompanionsPage from "./components/CompanionsPage";
 import ChatPage from "./components/ChatPage";
+import TierSelection from "./components/tiers/TierSelection";
 
 function App() {
   const [isCompliant, setIsCompliant] = useState(false);
@@ -52,6 +53,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/companions" element={<CompanionsPage />} />
           <Route path="/chat/:id" element={<ChatPage />} />
+          <Route path="/tiers" element={<TierSelection />} />
         </Routes>
       </BrowserRouter>
     </div>
