@@ -114,10 +114,57 @@ async def update_user(user_update: UserUpdate):
 
 @api_router.get("/companions", response_model=List[Companion])
 async def get_companions():
+    # Static companions data
+    companions_data = [
+        {
+            "id": "sophia",
+            "name": "Sophia",
+            "description": "An elegant and sophisticated companion with wisdom beyond her years. Sophia is thoughtful, articulate, and brings depth to every conversation.",
+            "image": "/avatars/sophia.png",
+            "personality": "sophisticated, wise, elegant, thoughtful"
+        },
+        {
+            "id": "aurora",
+            "name": "Aurora",
+            "description": "A vibrant and energetic companion who brings light to every interaction. Aurora is optimistic, creative, and always ready for adventure.",
+            "image": "/avatars/aurora.png",
+            "personality": "vibrant, energetic, optimistic, creative"
+        },
+        {
+            "id": "vanessa",
+            "name": "Vanessa",
+            "description": "A mysterious and alluring companion with an air of elegance. Vanessa is confident, intriguing, and captivates with her presence.",
+            "image": "/avatars/vanessa.png",
+            "personality": "mysterious, alluring, confident, elegant"
+        }
+    ]
     return [Companion(**companion) for companion in companions_data]
 
 @api_router.get("/companions/{companion_id}", response_model=Companion)
 async def get_companion(companion_id: str):
+    companions_data = [
+        {
+            "id": "sophia",
+            "name": "Sophia",
+            "description": "An elegant and sophisticated companion with wisdom beyond her years. Sophia is thoughtful, articulate, and brings depth to every conversation.",
+            "image": "/avatars/sophia.png",
+            "personality": "sophisticated, wise, elegant, thoughtful"
+        },
+        {
+            "id": "aurora",
+            "name": "Aurora",
+            "description": "A vibrant and energetic companion who brings light to every interaction. Aurora is optimistic, creative, and always ready for adventure.",
+            "image": "/avatars/aurora.png",
+            "personality": "vibrant, energetic, optimistic, creative"
+        },
+        {
+            "id": "vanessa",
+            "name": "Vanessa",
+            "description": "A mysterious and alluring companion with an air of elegance. Vanessa is confident, intriguing, and captivates with her presence.",
+            "image": "/avatars/vanessa.png",
+            "personality": "mysterious, alluring, confident, elegant"
+        }
+    ]
     companion = next((c for c in companions_data if c["id"] == companion_id), None)
     if not companion:
         raise HTTPException(status_code=404, detail="Companion not found")
