@@ -11,9 +11,14 @@ const HomePage = () => {
       <h1 className="main-title">Throne Companions</h1>
       <p className="subtitle">Enter a realm of sophisticated conversation</p>
       
-      <Link to="/companions" className="cta-button">
-        Meet Your Companions
-      </Link>
+      <div className="cta-buttons">
+        <Link to="/companions" className="cta-button">
+          Meet Your Companions
+        </Link>
+        <Link to="/tiers" className="cta-button secondary">
+          Choose Your Tier
+        </Link>
+      </div>
     </div>
   );
 };
