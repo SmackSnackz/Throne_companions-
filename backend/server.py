@@ -317,6 +317,16 @@ async def create_chat_message(companion_id: str, message_data: ChatMessageCreate
 
         # Check for upgrade requirement
         if request_result["upgrade_required"]:
+            # Track upgrade CTA shown
+            await analytics.track_upgrade_cta_shown(
+                user_id=user["id"],
+                session_id=session_id,
+                target_tier="apprentice",  # Default next tier
+                feature=message_data.mode,
+                companion=companion_id,
+                tier=user["tier"]
+            )
+            
             # Create upgrade CTA response
             upgrade_message = ChatMessage(
                 companion_id=companion_id,
