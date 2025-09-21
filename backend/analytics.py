@@ -77,7 +77,7 @@ class AnalyticsTracker:
         payload = {"target_tier": target_tier, "feature": feature}
         return await self.track_event("upgrade_cta_shown", user_id, session_id, payload, companion=companion, tier=tier, **kwargs)
     
-    async def track_upgrade_attempt(self, user_id: str, session_id: str, target_tier: str, payment_method: str = None, companion: str, tier: str = "novice", **kwargs):
+    async def track_upgrade_attempt(self, user_id: str, session_id: str, target_tier: str, companion: str, tier: str = "novice", payment_method: str = None, **kwargs):
         payload = {"target_tier": target_tier, "payment_method": payment_method}
         return await self.track_event("upgrade_attempt", user_id, session_id, payload, companion=companion, tier=tier, **kwargs)
     
