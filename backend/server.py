@@ -37,6 +37,24 @@ app = FastAPI()
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Default user for demo purposes - in production this would come from authentication
+DEFAULT_USER = {
+    "id": "demo_user",
+    "email": "demo@thronecompanions.com",
+    "tier": "novice",
+    "chosen_companion": "sophia",
+    "memory_retention_days": 1,
+    "features": {
+        "voice": False,
+        "visuals": False,
+        "finance_tools": False,
+        "intimacy_modes": False,
+        "custom_persona": False,
+        "private_hosting": False
+    },
+    "prompting_mastery": "clarity"
+}
+
 
 # Define Models
 class StatusCheck(BaseModel):
