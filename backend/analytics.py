@@ -117,7 +117,7 @@ class AnalyticsTracker:
         payload = {"reason": reason}
         return await self.track_event("safety_fallback_triggered", user_id, session_id, payload, companion=companion, tier=tier, **kwargs)
     
-    async def track_llm_request(self, user_id: str, session_id: str, latency_ms: int, success: bool, error_code: str = None, companion: str, tier: str = "novice", **kwargs):
+    async def track_llm_request(self, user_id: str, session_id: str, latency_ms: int, success: bool, companion: str, error_code: str = None, tier: str = "novice", **kwargs):
         payload = {"latency_ms": latency_ms, "success": success, "error_code": error_code}
         return await self.track_event("llm_request", user_id, session_id, payload, companion=companion, tier=tier, **kwargs)
     
