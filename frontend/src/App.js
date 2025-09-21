@@ -27,6 +27,10 @@ function App() {
     checkOnboarding();
   }, []);
 
+  const handleOnboardingComplete = () => {
+    setIsOnboarded(true);
+  };
+
   if (isLoading) {
     return (
       <div className="loading-screen">
@@ -40,7 +44,7 @@ function App() {
 
   // Show onboarding flow for new users
   if (!isOnboarded) {
-    return <OnboardingFlow />;
+    return <OnboardingFlow onOnboardingComplete={handleOnboardingComplete} />;
   }
 
   // Show main app for onboarded users
