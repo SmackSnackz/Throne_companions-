@@ -10,10 +10,12 @@ import uuid
 from datetime import datetime, timedelta
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
-# Import tier system and content packs
+# Import tier system, content packs, and analytics
 from tier_configs import TIER_CONFIGS, get_tier_config, mode_required_tier
 from tier_system import build_behavior_config, render_upgrade_cta, check_feature_access, get_memory_expiry_date
 from content_packs import get_intro_script, get_starter_ritual, get_fallback_prompt
+from analytics import get_analytics_tracker
+from dashboard import create_dashboard_routes
 from models import *
 
 
