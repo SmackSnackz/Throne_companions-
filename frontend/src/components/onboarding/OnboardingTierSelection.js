@@ -113,7 +113,13 @@ const OnboardingTierSelection = ({ onTierSelected, selectedTier = "novice", isOn
                   </div>
                 )}
                 {!isSelected && (
-                  <button className="select-tier-button">
+                  <button 
+                    className="select-tier-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTierSelect(tierKey);
+                    }}
+                  >
                     {tier.price === 0 ? 'Start Free' : 'Choose Plan'}
                   </button>
                 )}
