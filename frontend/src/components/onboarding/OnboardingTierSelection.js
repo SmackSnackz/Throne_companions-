@@ -26,7 +26,15 @@ const OnboardingTierSelection = ({ onTierSelected, selectedTier = "novice", isOn
 
   const handleTierSelect = (tierKey) => {
     setCurrentTier(tierKey);
-    onTierSelected(tierKey);
+    
+    // For free tier, proceed immediately
+    if (tierKey === "novice") {
+      onTierSelected(tierKey);
+    } else {
+      // For paid tiers, just select for now (payment integration comes later)
+      // But still allow proceeding for testing
+      onTierSelected(tierKey);
+    }
   };
 
   if (loading) {
