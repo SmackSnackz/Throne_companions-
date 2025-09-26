@@ -59,7 +59,13 @@ const OnboardingFlow = ({ onOnboardingComplete }) => {
   const saveProgress = (stepData) => {
     const updatedData = { ...onboardingData, ...stepData };
     setOnboardingData(updatedData);
-    localStorage.setItem('throneCompanionsOnboarding', JSON.stringify(updatedData));
+    
+    try {
+      localStorage.setItem('throneCompanionsOnboarding', JSON.stringify(updatedData));
+      console.log('Onboarding progress saved:', updatedData);
+    } catch (error) {
+      console.error('Failed to save onboarding progress:', error);
+    }
   };
 
   const nextStep = (stepData = {}) => {
