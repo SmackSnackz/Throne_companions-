@@ -31,14 +31,19 @@ const CompanionSelection = ({ onCompanionSelected, selectedCompanion }) => {
   }, []);
 
   const handleCompanionSelect = (companionId) => {
-    console.log('Companion selected:', companionId);
+    console.log('Companion clicked:', companionId);
     setSelected(companionId);
+    
+    // Force re-render to show selection immediately
+    const event = new CustomEvent('companionSelected', { detail: companionId });
+    window.dispatchEvent(event);
     
     // Auto-proceed after selection (like tier selection does)
     if (onCompanionSelected) {
       setTimeout(() => {
+        console.log('Auto-proceeding with companion:', companionId);
         onCompanionSelected(companionId);
-      }, 500); // Small delay to show selection feedback
+      }, 800); // Slightly longer delay to show selection
     }
   };
 
