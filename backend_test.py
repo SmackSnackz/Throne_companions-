@@ -57,6 +57,24 @@ class ThroneCompanionsAPITester:
         """Test API root endpoint"""
         return self.run_test("API Root", "GET", "", 200)
 
+    def test_get_tiers(self):
+        """Test getting tier configuration data"""
+        success, response = self.run_test("Get Tiers", "GET", "tiers", 200)
+        
+        if success and isinstance(response, dict):
+            print(f"   Found {len(response)} tiers")
+            for tier_name, tier_config in response.items():
+                print(f"   - {tier_name}: {tier_config.get('name', 'Unknown')}")
+                # Verify required tier fields
+                required_fields = ['name', 'price', 'memory_retention_days', 'prompting_mastery']
+                missing_fields = [field for field in required_fields if field not in tier_config]
+                if missing_fields:
+                    print(f"     ⚠️  Missing fields: {missing_fields}")
+                else:
+                    print(f"     ✅ All required fields present")
+        
+        return success, response
+
     def test_get_companions(self):
         """Test getting all companions"""
         success, response = self.run_test("Get All Companions", "GET", "companions", 200)
