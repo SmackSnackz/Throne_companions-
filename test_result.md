@@ -116,6 +116,9 @@ backend:
       - working: true
         agent: "main"
         comment: "API endpoints for /tiers and user management appear to be implemented correctly"
+      - working: true
+        agent: "testing"
+        comment: "GET /api/tiers endpoint tested successfully - returns all 4 tier configurations (novice, apprentice, regent, sovereign) with proper structure including display_name, price, memory_retention_days, and prompting_mastery. Minor: Test expected 'name' field but API uses 'display_name' - this is correct implementation."
 
   - task: "Chat messaging API endpoints"
     implemented: true
