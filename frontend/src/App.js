@@ -14,12 +14,27 @@ function App() {
   useEffect(() => {
     // Check if user has completed onboarding
     const checkOnboarding = () => {
-      const onboardingData = localStorage.getItem('throneCompanionsOnboarding');
-      if (onboardingData) {
-        const parsed = JSON.parse(onboardingData);
-        if (parsed.onboarding_completed || parsed.first_chat_started) {
-          setIsOnboarded(true);
+      try {
+        const onboardingData = localStorage.getItem('throneCompanionsOnboarding');
+        console.log('Checking onboarding data:', onboardingData);
+        
+        if (onboardingData) {
+          const parsed = JSON.parse(onboardingData);
+          console.log('Parsed onboarding data:', parsed);
+          
+          // More lenient check for onboarding completion
+          if (parsed.onboarding_completed || parsed.first_chat_started || 
+              (parsed.completed_compliance && parsed.chosen_companion && parsed.chosen_tier)) {
+            console.log('User is onboarded, showing main app');
+            setIsOnboarded(true);
+          } else {
+            console.log('User needs onboarding');
+          }
+        } else {
+          console.log('No onboarding data found');
         }
+      } catch (error) {
+        console.error('Error checking onboarding status:', error);
       }
       setIsLoading(false);
     };
