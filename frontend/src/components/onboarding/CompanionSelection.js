@@ -31,11 +31,13 @@ const CompanionSelection = ({ onCompanionSelected, selectedCompanion }) => {
   }, []);
 
   const handleCompanionSelect = (companionId) => {
+    console.log('Companion selected:', companionId);
     setSelected(companionId);
   };
 
   const handleContinue = () => {
-    if (selected) {
+    console.log('Continue clicked, selected:', selected);
+    if (selected && onCompanionSelected) {
       onCompanionSelected(selected);
     }
   };
