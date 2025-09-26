@@ -89,6 +89,7 @@ const OnboardingFlow = ({ onOnboardingComplete }) => {
   };
 
   const handleCompanionSelected = (companionId) => {
+    console.log('Companion selected:', companionId);
     trackOnboardingEvent('companion_selected', { companion: companionId });
     nextStep({ chosen_companion: companionId });
   };
