@@ -130,10 +130,9 @@ const FirstGuidedChat = ({ companion, tier, onChatStarted }) => {
 
     setMessages(prev => [...prev, ritualMessage]);
 
-    // Brief delay then transition to main chat
-    setTimeout(() => {
-      onChatStarted();
-    }, 2000);
+    // Complete onboarding immediately
+    console.log('Completing onboarding from FirstGuidedChat');
+    onChatStarted();
   };
 
   if (!isReady) {
