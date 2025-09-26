@@ -33,6 +33,13 @@ const CompanionSelection = ({ onCompanionSelected, selectedCompanion }) => {
   const handleCompanionSelect = (companionId) => {
     console.log('Companion selected:', companionId);
     setSelected(companionId);
+    
+    // Auto-proceed after selection (like tier selection does)
+    if (onCompanionSelected) {
+      setTimeout(() => {
+        onCompanionSelected(companionId);
+      }, 500); // Small delay to show selection feedback
+    }
   };
 
   const handleContinue = () => {
