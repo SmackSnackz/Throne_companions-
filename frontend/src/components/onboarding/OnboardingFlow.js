@@ -69,10 +69,12 @@ const OnboardingFlow = ({ onOnboardingComplete }) => {
   };
 
   const nextStep = (stepData = {}) => {
+    console.log('nextStep called with:', stepData, 'current step:', currentStep);
     saveProgress(stepData);
     
     if (currentStep < steps.length - 1) {
       const nextStepIndex = currentStep + 1;
+      console.log('Moving to step:', nextStepIndex, steps[nextStepIndex]);
       setCurrentStep(nextStepIndex);
       trackOnboardingEvent(`step_${steps[nextStepIndex]}_started`);
     }
