@@ -101,3 +101,87 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Fix tier selection buttons that are not functional - Free Novice plan should continue directly into onboarding and First Guided Chat (no Stripe), and paid tiers should stay gated until Stripe is integrated. Also verify if chat functionality (/chat/:id route and interaction logic) is working correctly."
+
+backend:
+  - task: "Tier system API endpoints"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "API endpoints for /tiers and user management appear to be implemented correctly"
+
+  - task: "Chat messaging API endpoints"
+    implemented: true
+    working: "unknown"
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "Chat endpoints exist but need verification of functionality - user reports chat interaction not working"
+
+frontend:
+  - task: "Tier selection button click handlers"
+    implemented: true
+    working: false
+    file: "frontend/src/components/onboarding/OnboardingTierSelection.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reports tier selection buttons are not functional - clicking any plan does not proceed into onboarding or chat"
+
+  - task: "Onboarding flow state management"
+    implemented: true
+    working: false
+    file: "frontend/src/components/onboarding/OnboardingFlow.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "State management between onboarding steps not progressing correctly after tier selection"
+
+  - task: "Chat page interaction functionality"
+    implemented: true
+    working: false
+    file: "frontend/src/components/ChatPage.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reports chat window appears but doesn't allow interaction - need to verify /chat/:id route functionality"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Tier selection button click handlers"
+    - "Onboarding flow state management" 
+    - "Chat page interaction functionality"
+  stuck_tasks:
+    - "Tier selection button click handlers"
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Initial analysis complete. Identified issues with tier selection buttons and chat interaction. Need to fix onClick handlers and verify backend integration. Plan to test backend endpoints first, then fix frontend issues and test e2e flow."
