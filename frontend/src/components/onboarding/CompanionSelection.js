@@ -95,7 +95,10 @@ const CompanionSelection = ({ onCompanionSelected, selectedCompanion }) => {
           onClick={handleContinue}
           disabled={!selected}
         >
-          Continue with {selected && companions.find(c => c.id === selected)?.name}
+          {selected 
+            ? `Continue with ${companions.find(c => c.id === selected)?.name}` 
+            : 'Select a companion to continue'
+          }
         </button>
       </div>
     </div>
