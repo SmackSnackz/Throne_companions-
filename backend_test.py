@@ -200,6 +200,9 @@ def main():
     # Test API root
     tester.test_api_root()
     
+    # Test tiers endpoint
+    tester.test_get_tiers()
+    
     # Test companions endpoints
     tester.test_get_companions()
     tester.test_get_individual_companions()
