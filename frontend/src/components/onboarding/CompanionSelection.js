@@ -91,10 +91,14 @@ const CompanionSelection = ({ onCompanionSelected, selectedCompanion }) => {
             </div>
             
             <div className="selection-indicator">
-              {selected === companion.id && (
+              {selected === companion.id ? (
                 <div className="selected-badge">
                   <span className="checkmark">✓</span>
                   Selected
+                </div>
+              ) : (
+                <div className="click-to-select">
+                  Click to Select
                 </div>
               )}
             </div>
