@@ -71,6 +71,7 @@ const CompanionSelection = ({ onCompanionSelected, selectedCompanion }) => {
             key={companion.id}
             className={`companion-selection-card ${selected === companion.id ? 'selected' : ''}`}
             onClick={() => handleCompanionSelect(companion.id)}
+            style={{ cursor: 'pointer', userSelect: 'none' }}
           >
             <div className="companion-avatar-container">
               <img 
