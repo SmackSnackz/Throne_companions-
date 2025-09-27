@@ -243,6 +243,7 @@ const ChatPage = () => {
             tag={solicitation.tag}
             companionName={companion.name}
             onSubmit={handleSolicitationSubmit}
+            onSkip={clearSolicitation}
           />
         )}
 
