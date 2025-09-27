@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Header
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -10,12 +10,16 @@ import uuid
 from datetime import datetime, timedelta
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
-# Import tier system, content packs, and analytics
+# Import tier system, content packs, analytics, and auth utils
 from tier_configs import TIER_CONFIGS, get_tier_config, mode_required_tier
 from tier_system import build_behavior_config, render_upgrade_cta, check_feature_access, get_memory_expiry_date
 from content_packs import get_intro_script, get_starter_ritual, get_fallback_prompt
 from analytics import get_analytics_tracker
 from dashboard import create_dashboard_routes
+from auth_utils import (
+    decode_jwt, is_admin_user, incr_count, get_count, reset_count, 
+    set_expiry, generate_session_key, get_upgrade_message, FREE_LIMIT
+)
 from models import *
 
 
