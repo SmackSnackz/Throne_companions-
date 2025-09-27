@@ -353,8 +353,8 @@ async def chat_endpoint(
         ).with_model("openai", "gpt-4o-mini")
         
         # Get LLM response
-        llm_response = companion_chat.chat([user_message])
-        reply_text = llm_response.choices[0].message.content if llm_response.choices else "I'm having trouble responding right now."
+        llm_response = await companion_chat.send_message(user_message)
+        reply_text = llm_response if llm_response else "I'm having trouble responding right now."
         
     except Exception as e:
         logging.error(f"LLM call failed: {e}")
