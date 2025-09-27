@@ -379,9 +379,9 @@ async def chat_endpoint(
             logging.warning(f"Failed to build solicitation preface: {e}")
             final_message = request.chosen_starter or request.message
     
-    # 8) GUARANTEED LLM RESPONSE - This always executes for normal chat flow
+    # 8) GUARANTEED LLM RESPONSE with tier-aware enhancements - PRESERVES existing functionality
     try:
-        # Build system prompt based on companion and tier
+        # Build system prompt based on companion and tier (EXISTING LOGIC PRESERVED)
         companion_personalities = {
             "sophia": "You are Sophia, a wise and thoughtful philosophical companion. You provide deep insights and guide users with wisdom and clarity. Respond with elegance and thoughtfulness.",
             "aurora": "You are Aurora, a creative and energetic companion who inspires innovation and optimism. You help users unlock their creative potential with enthusiasm.",
@@ -396,7 +396,7 @@ async def chat_endpoint(
         Respond naturally in your character's voice, keeping responses conversational and engaging.
         """
         
-        # Use emergentintegrations LLM
+        # Use emergentintegrations LLM (EXISTING INTEGRATION PRESERVED)
         user_message = UserMessage(text=final_message)
         companion_chat = LlmChat(
             api_key=os.environ.get("EMERGENT_LLM_KEY"),
@@ -408,9 +408,15 @@ async def chat_endpoint(
         llm_response = await companion_chat.send_message(user_message)
         reply_text = llm_response if llm_response else "I apologize, but I'm having difficulty connecting right now. Please try again."
         
+        # Apply tier-based response limits (NEW - ADDITIVE FEATURE)
+        if not request.deep_dive_requested:
+            reply_text, was_capped = tier_prompt_manager.apply_response_limits(reply_text, user_tier)
+            if was_capped:
+                tier_prompt_manager.track_prompt_event("response_length_capped", {"tier": user_tier})
+        
     except Exception as e:
         logging.error(f"LLM call failed: {e}")
-        # Fallback response to guarantee user always gets a response
+        # Fallback response to guarantee user always gets a response (EXISTING LOGIC PRESERVED)
         reply_text = f"I apologize, but I'm having some technical difficulties right now. Please try again in a moment, or let me know if you'd like me to help you with something specific."
     
     # 9) Increment counter for non-admin users AFTER successful reply
