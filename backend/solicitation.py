@@ -26,38 +26,42 @@ class SolicitationConfig:
             self.config = json.load(f)
     
     def is_vague(self, ctx: DetectionContext) -> bool:
-        """Detect if user input is vague and needs solicitation"""
+        """Detect if user input is vague and needs solicitation - VERY RESTRICTIVE"""
         text = (ctx.get("user_input", "") or "").lower().strip()
         
-        # Check minimum length first - but be more lenient
-        if len(text) < 3:
-            return True
+        # Don't trigger for empty or very short input
+        if len(text) < 2:
+            return False
         
-        # More restrictive vague keyword check - only truly vague inputs
-        vague_keywords = ["help", "idk", "i don't know", "not sure", "what do i do", "?"]
-        exact_vague_matches = ["help", "idk", "?", "what", "how", "tell me"]
-        
-        # Only trigger on very specific vague inputs
+        # ONLY trigger on specific vague keywords - exact matches
+        exact_vague_matches = ["help", "idk", "?"]
         if text in exact_vague_matches:
             return True
             
-        # Or if it starts with very vague patterns
-        if text.startswith(("help me", "i don't know", "not sure", "what do i")):
+        # Or very specific vague patterns
+        vague_starts = ["help me", "i don't know", "not sure", "what do i do"]
+        if any(text.startswith(pattern) for pattern in vague_starts):
             return True
         
-        # Don't trigger solicitation for clear conversational messages
-        clear_patterns = ["hello", "hi", "how are you", "good morning", "good evening", 
-                         "tell me about", "explain", "what is", "can you"]
-        if any(pattern in text for pattern in clear_patterns):
+        # NEVER trigger for clear conversational messages
+        clear_indicators = [
+            "hello", "hi", "hey", "good morning", "good afternoon", "good evening",
+            "how are you", "tell me", "explain", "what is", "can you", "please",
+            "i want", "i need", "show me", "give me", "let's", "about", "discuss"
+        ]
+        
+        if any(indicator in text for indicator in clear_indicators):
             return False
             
-        # Check intent score if available - make threshold higher
-        if self.config["trigger"]["require_low_intent_score"]:
-            intent_score = ctx.get("intent_score", 1.0)  # Default to high intent
-            if intent_score < 0.1:  # Much lower threshold
-                return True
+        # Don't trigger for questions with specific content
+        if "?" in text and len(text) > 5:
+            return False
+            
+        # Don't trigger for statements longer than 10 characters
+        if len(text) > 10:
+            return False
         
-        return False
+        return False  # Default to NO solicitation - be very conservative
     
     def build_solicitation(self, persona: PersonaKey) -> Dict:
         """Build solicitation response for a specific persona"""
