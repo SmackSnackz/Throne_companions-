@@ -268,25 +268,30 @@ class ThroneCompanionsAPITester:
         return success, response
 
     def test_new_chat_endpoint_basic(self):
-        """Test the new /api/chat endpoint basic functionality"""
-        print("\n💬 Testing New Chat Endpoint...")
+        """Test the new /api/chat endpoint basic functionality with JSON body"""
+        print("\n💬 Testing New Chat Endpoint (FIXED - JSON Body)...")
         
         if not self.user_token:
             print("❌ No user token available for chat testing")
             return False, {}
         
-        # Test chat with user token
-        headers = {'Authorization': f'Bearer {self.user_token}'}
+        # Test chat with user token using JSON body
+        headers = {
+            'Authorization': f'Bearer {self.user_token}',
+            'Content-Type': 'application/json'
+        }
         test_message = f"Hello! This is a test message at {datetime.now().strftime('%H:%M:%S')}"
         
-        # Use query parameters instead of request body
-        endpoint = f"chat?companion_id=sophia&message={test_message}&session_id=test_session_basic"
-        
         success, response = self.run_test(
-            "Chat with User Token", 
+            "Chat with User Token (JSON Body)", 
             "POST", 
-            endpoint, 
+            "chat", 
             200,
+            data={
+                "companion_id": "sophia",
+                "message": test_message,
+                "session_id": "test123"
+            },
             headers=headers
         )
         
