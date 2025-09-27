@@ -195,6 +195,18 @@ backend:
         agent: "testing"
         comment: "SESSION PERSISTENCE VERIFIED: Message counts correctly persist across multiple requests using the same session_id. First message shows used=1, second message with same session_id shows used=2. Session-based message tracking working correctly with Redis/in-memory fallback."
 
+  - task: "Frontend-Backend API Integration for Message Tracking"
+    implemented: true
+    working: false
+    file: "backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL INTEGRATION ISSUE: Frontend message tracking UI is implemented correctly but cannot communicate with backend APIs. /api/auth/create-token returns 422 errors because backend expects email/role as query parameters but frontend sends JSON body. /api/chat also returns 422 errors due to missing/invalid JWT tokens. This breaks: admin toggle functionality, message sending, usage counter updates, and upgrade modal triggers. Backend API design mismatch with frontend implementation."
+
 frontend:
   - task: "Tier selection button click handlers"
     implemented: true
