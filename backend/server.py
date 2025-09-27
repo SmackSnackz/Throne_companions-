@@ -316,7 +316,7 @@ async def chat_endpoint(
         current_count = get_count(session_key)
         if current_count >= FREE_LIMIT:
             # Send upgrade CTA
-            upgrade_msg = get_upgrade_message(companion_id)
+            upgrade_msg = get_upgrade_message(request.companion_id)
             return {
                 "reply": upgrade_msg,
                 "upgrade": True,
@@ -345,7 +345,7 @@ async def chat_endpoint(
         """
         
         # Use emergentintegrations LLM
-        user_message = UserMessage(text=message)
+        user_message = UserMessage(text=request.message)
         companion_chat = LlmChat(
             api_key=os.environ.get("EMERGENT_LLM_KEY"),
             session_id=session_id,
@@ -372,8 +372,8 @@ async def chat_endpoint(
     try:
         # Save user message
         user_msg = ChatMessage(
-            companion_id=companion_id,
-            message=message,
+            companion_id=request.companion_id,
+            message=request.message,
             is_user=True,
             tier=user_tier,
             mode="text"
@@ -382,7 +382,7 @@ async def chat_endpoint(
         
         # Save companion response  
         companion_msg = ChatMessage(
-            companion_id=companion_id,
+            companion_id=request.companion_id,
             message=reply_text,
             is_user=False,
             tier=user_tier,
