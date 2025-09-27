@@ -360,14 +360,17 @@ class ThroneCompanionsAPITester:
         return len(results) > 0, results
 
     def test_admin_bypass_functionality(self):
-        """Test admin bypass functionality (unlimited messages)"""
-        print("\n👑 Testing Admin Bypass Functionality...")
+        """Test admin bypass functionality (unlimited messages) with JSON body"""
+        print("\n👑 Testing Admin Bypass Functionality (FIXED - JSON Body)...")
         
         if not self.admin_token:
             print("❌ No admin token available for bypass testing")
             return False, {}
         
-        headers = {'Authorization': f'Bearer {self.admin_token}'}
+        headers = {
+            'Authorization': f'Bearer {self.admin_token}',
+            'Content-Type': 'application/json'
+        }
         session_id = f"test_session_admin_{int(time.time())}"
         
         # Send multiple messages as admin (should not hit limit)
@@ -375,14 +378,16 @@ class ThroneCompanionsAPITester:
         for i in range(25):  # Send more than the 20 message limit
             test_message = f"Admin test message {i+1}"
             
-            # Use query parameters
-            endpoint = f"chat?companion_id=aurora&message={test_message}&session_id={session_id}"
-            
             success, response = self.run_test(
-                f"Admin Message {i+1}/25", 
+                f"Admin Message {i+1}/25 (JSON Body)", 
                 "POST", 
-                endpoint, 
+                "chat", 
                 200,
+                data={
+                    "companion_id": "aurora",
+                    "message": test_message,
+                    "session_id": session_id
+                },
                 headers=headers
             )
             
