@@ -44,6 +44,10 @@ class ChatRequest(BaseModel):
     session_starter_count: Optional[int] = 0
     deep_dive_requested: Optional[bool] = False
     expansion_requested: Optional[bool] = False
+    # Master Prompt System Variables
+    user_mode: Optional[str] = "Confidant"
+    affection_dial: Optional[int] = 2
+    memory_summary: Optional[str] = ""
 
 
 ROOT_DIR = Path(__file__).parent
