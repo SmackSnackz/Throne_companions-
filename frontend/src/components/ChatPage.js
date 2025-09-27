@@ -260,10 +260,20 @@ const ChatPage = () => {
             tag={solicitation.tag}
             companionName={companion.name}
             onSubmit={handleSolicitationSubmit}
-            onSkip={clearSolicitation}
+            onSkip={clearAllSpecialModes}
             coaching={solicitation.coaching}
             tier={solicitation.tier}
             features={solicitation.features}
+          />
+        )}
+
+        {/* Distress Mode Response */}
+        {distressResponse && (
+          <DistressResponse
+            response={distressResponse}
+            companionName={companion.name}
+            onExpansionRequest={handleDistressExpansion}
+            onContinue={clearAllSpecialModes}
           />
         )}
 
