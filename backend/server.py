@@ -21,6 +21,7 @@ from auth_utils import (
     decode_jwt, is_admin_user, incr_count, get_count, reset_count, 
     set_expiry, generate_session_key, get_upgrade_message, FREE_LIMIT
 )
+from solicitation import detect_and_solicit, build_llm_preface
 from models import *
 
 from pydantic import BaseModel
