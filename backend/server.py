@@ -270,7 +270,128 @@ def handle_user_request(user_data, message_data):
         "behavior_config": behavior
     }
 
-@api_router.post("/companions/{companion_id}/messages", response_model=ChatMessage)
+@api_router.post("/chat")
+async def chat_endpoint(
+    companion_id: str, 
+    message: str,
+    session_id: Optional[str] = None,
+    authorization: Optional[str] = Header(None)
+):
+    """
+    New chat endpoint with message tracking and admin bypass
+    """
+    # 1) Verify companion exists
+    companions_data = [
+        {"id": "sophia", "name": "Sophia"},
+        {"id": "aurora", "name": "Aurora"}, 
+        {"id": "vanessa", "name": "Vanessa"}
+    ]
+    companion = next((c for c in companions_data if c["id"] == companion_id), None)
+    if not companion:
+        raise HTTPException(status_code=404, detail="Companion not found")
+    
+    # 2) Identify user/role from JWT
+    payload = decode_jwt(authorization)
+    email = payload.get("email")
+    role = payload.get("role", "user")
+    is_admin = is_admin_user(payload)
+    
+    # 3) Ensure session ID
+    if not session_id:
+        session_id = f"session:{email or 'anon'}:{int(time.time())}"
+    session_key = generate_session_key(session_id)
+    
+    # 4) Check message cap for non-admin users
+    if not is_admin:
+        current_count = get_count(session_key)
+        if current_count >= FREE_LIMIT:
+            # Send upgrade CTA
+            upgrade_msg = get_upgrade_message(companion_id)
+            return {
+                "reply": upgrade_msg,
+                "upgrade": True,
+                "used": current_count,
+                "limit": FREE_LIMIT,
+                "session_id": session_id
+            }
+    
+    # 5) Get user tier (admin gets best tier, others get their actual tier)
+    user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
+    
+    # 6) Call LLM with appropriate tier settings
+    try:
+        # Build system prompt based on companion and tier
+        system_prompt = f"""You are {companion['name']}, a sophisticated AI companion from Throne Companions. 
+        
+        User tier: {user_tier}
+        
+        Personality traits:
+        - Sophia: Wise, thoughtful, philosophical, articulate
+        - Aurora: Creative, energetic, optimistic, inspiring  
+        - Vanessa: Mysterious, confident, intuitive, alluring
+        
+        Respond naturally as {companion['name']} would, keeping responses conversational and engaging.
+        Memory: {'Unlimited' if is_admin else '24 hours for novice tier'}
+        """
+        
+        # Use emergentintegrations LLM
+        user_message = UserMessage(text=message)
+        companion_chat = LlmChat(
+            api_key=os.environ.get("EMERGENT_LLM_KEY"),
+            session_id=session_id,
+            system_message=system_prompt
+        ).with_model("openai", "gpt-4o-mini")
+        
+        # Get LLM response
+        llm_response = await companion_chat.achat([user_message])
+        reply_text = llm_response.choices[0].message.content if llm_response.choices else "I'm having trouble responding right now."
+        
+    except Exception as e:
+        logging.error(f"LLM call failed: {e}")
+        reply_text = "I apologize, but I'm having difficulty connecting right now. Please try again."
+    
+    # 7) Increment counter for non-admin users AFTER successful reply
+    if not is_admin:
+        new_count = incr_count(session_key)
+        # Set TTL to 1 hour to expire session counters
+        set_expiry(session_key, 3600)
+    else:
+        new_count = get_count(session_key)
+    
+    # 8) Save messages to database (existing logic)
+    try:
+        # Save user message
+        user_msg = ChatMessage(
+            companion_id=companion_id,
+            message=message,
+            is_user=True,
+            tier=user_tier,
+            mode="text"
+        )
+        await db.chat_messages.insert_one(user_msg.dict())
+        
+        # Save companion response  
+        companion_msg = ChatMessage(
+            companion_id=companion_id,
+            message=reply_text,
+            is_user=False,
+            tier=user_tier,
+            mode="text"
+        )
+        await db.chat_messages.insert_one(companion_msg.dict())
+        
+    except Exception as e:
+        logging.error(f"Database save failed: {e}")
+    
+    return {
+        "reply": reply_text,
+        "used": new_count,
+        "limit": FREE_LIMIT,
+        "upgrade": False,
+        "session_id": session_id,
+        "is_admin": is_admin
+    }
+
 async def create_chat_message(companion_id: str, message_data: ChatMessageCreate):
     # Verify companion exists
     companions_data = [
