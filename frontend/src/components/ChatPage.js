@@ -234,7 +234,7 @@ const ChatPage = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Solicitation Panel */}
+        {/* Enhanced Solicitation Panel with Tier Features */}
         {solicitation && (
           <SolicitationPanel
             questions={solicitation.questions}
@@ -243,6 +243,9 @@ const ChatPage = () => {
             companionName={companion.name}
             onSubmit={handleSolicitationSubmit}
             onSkip={clearSolicitation}
+            coaching={solicitation.coaching}
+            tier={solicitation.tier}
+            features={solicitation.features}
           />
         )}
 
