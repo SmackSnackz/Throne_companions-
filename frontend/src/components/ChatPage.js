@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import SolicitationPanel from "./SolicitationPanel";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -18,6 +19,7 @@ const ChatPage = () => {
   const [usedCount, setUsedCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [solicitation, setSolicitation] = useState(null);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
