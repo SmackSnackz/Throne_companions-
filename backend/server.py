@@ -314,7 +314,13 @@ async def chat_endpoint(
     session_id = request.session_id or f"session:{email or 'anon'}:{int(time.time())}"
     session_key = generate_session_key(session_id)
     
-    # 4) Check message cap for non-admin users
+    # 4) Check for prompt solicitation (unless user provided clarifications)
+    if not request.solicitation_answers and not request.chosen_starter:
+        solicitation = detect_and_solicit(request.message, request.companion_id)
+        if solicitation:
+            return solicitation
+    
+    # 5) Check message cap for non-admin users
     if not is_admin:
         current_count = get_count(session_key)
         if current_count >= FREE_LIMIT:
