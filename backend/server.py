@@ -384,13 +384,26 @@ async def chat_endpoint(
     except Exception as e:
         logging.error(f"Database save failed: {e}")
     
+@api_router.post("/auth/create-token")
+async def create_test_token(email: str, role: str = "user"):
+    """Create JWT token for testing (remove in production)"""
+    from auth_utils import create_jwt_token
+    token = create_jwt_token(email, role)
+    return {"token": token, "email": email, "role": role}
+
+@api_router.get("/auth/verify")
+async def verify_token(authorization: Optional[str] = Header(None)):
+    """Verify JWT token and return user info"""
+    payload = decode_jwt(authorization)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid or missing token")
+    
+    is_admin = is_admin_user(payload)
     return {
-        "reply": reply_text,
-        "used": new_count,
-        "limit": FREE_LIMIT,
-        "upgrade": False,
-        "session_id": session_id,
-        "is_admin": is_admin
+        "email": payload.get("email"),
+        "role": payload.get("role", "user"),
+        "is_admin": is_admin,
+        "exp": payload.get("exp")
     }
 
 async def create_chat_message(companion_id: str, message_data: ChatMessageCreate):
