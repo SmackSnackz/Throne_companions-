@@ -29,19 +29,32 @@ class SolicitationConfig:
         """Detect if user input is vague and needs solicitation"""
         text = (ctx.get("user_input", "") or "").lower().strip()
         
-        # Check minimum length
-        if len(text) < self.config["trigger"]["min_length"]:
+        # Check minimum length first - but be more lenient
+        if len(text) < 3:
             return True
         
-        # Check for vague keywords
-        vague_keywords = self.config["trigger"]["vague_keywords"]
-        if any(keyword in text for keyword in vague_keywords):
+        # More restrictive vague keyword check - only truly vague inputs
+        vague_keywords = ["help", "idk", "i don't know", "not sure", "what do i do", "?"]
+        exact_vague_matches = ["help", "idk", "?", "what", "how", "tell me"]
+        
+        # Only trigger on very specific vague inputs
+        if text in exact_vague_matches:
+            return True
+            
+        # Or if it starts with very vague patterns
+        if text.startswith(("help me", "i don't know", "not sure", "what do i")):
             return True
         
-        # Check intent score if available
+        # Don't trigger solicitation for clear conversational messages
+        clear_patterns = ["hello", "hi", "how are you", "good morning", "good evening", 
+                         "tell me about", "explain", "what is", "can you"]
+        if any(pattern in text for pattern in clear_patterns):
+            return False
+            
+        # Check intent score if available - make threshold higher
         if self.config["trigger"]["require_low_intent_score"]:
-            intent_score = ctx.get("intent_score", 0.0)
-            if intent_score < 0.3:
+            intent_score = ctx.get("intent_score", 1.0)  # Default to high intent
+            if intent_score < 0.1:  # Much lower threshold
                 return True
         
         return False
