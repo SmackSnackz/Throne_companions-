@@ -277,16 +277,14 @@ class ThroneCompanionsAPITester:
         headers = {'Authorization': f'Bearer {self.user_token}'}
         test_message = f"Hello! This is a test message at {datetime.now().strftime('%H:%M:%S')}"
         
+        # Use query parameters instead of request body
+        endpoint = f"chat?companion_id=sophia&message={test_message}&session_id=test_session_basic"
+        
         success, response = self.run_test(
             "Chat with User Token", 
             "POST", 
-            "chat", 
+            endpoint, 
             200,
-            data={
-                "companion_id": "sophia",
-                "message": test_message,
-                "session_id": "test_session_basic"
-            },
             headers=headers
         )
         
