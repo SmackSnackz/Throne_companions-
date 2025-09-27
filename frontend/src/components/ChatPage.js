@@ -95,7 +95,6 @@ const ChatPage = () => {
     if ((!newMessage.trim() && !chosenStarter) || sending || !sessionId) return;
 
     setSending(true);
-    setSolicitation(null); // Clear any pending solicitation
     
     try {
       const token = localStorage.getItem('tc_jwt') || '';
@@ -132,6 +131,9 @@ const ChatPage = () => {
         return;
       }
       
+      // Clear any existing solicitation
+      setSolicitation(null);
+      
       // Add user message to display
       const userMsg = {
         id: `user-${Date.now()}`,
@@ -157,6 +159,8 @@ const ChatPage = () => {
       
     } catch (err) {
       console.error("Error sending message:", err);
+      // Clear solicitation on error
+      setSolicitation(null);
       const errorMsg = {
         id: `error-${Date.now()}`,
         message: "Sorry, I'm having trouble responding right now. Please try again.",
