@@ -365,7 +365,7 @@ async def chat_endpoint(
         """
         
         # Use emergentintegrations LLM
-        user_message = UserMessage(text=request.message)
+        user_message = UserMessage(text=final_message)
         companion_chat = LlmChat(
             api_key=os.environ.get("EMERGENT_LLM_KEY"),
             session_id=session_id,
@@ -380,7 +380,7 @@ async def chat_endpoint(
         logging.error(f"LLM call failed: {e}")
         reply_text = "I apologize, but I'm having difficulty connecting right now. Please try again."
     
-    # 7) Increment counter for non-admin users AFTER successful reply
+    # 9) Increment counter for non-admin users AFTER successful reply
     if not is_admin:
         new_count = incr_count(session_key)
         # Set TTL to 1 hour to expire session counters
