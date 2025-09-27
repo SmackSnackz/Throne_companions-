@@ -334,10 +334,21 @@ async def chat_endpoint(
                 "session_id": session_id
             }
     
-    # 5) Get user tier (admin gets best tier, others get their actual tier)
+    # 6) Get user tier (admin gets best tier, others get their actual tier)
     user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
     
-    # 6) Call LLM with appropriate tier settings
+    # 7) Build enhanced system prompt with solicitation context if provided
+    final_message = request.message
+    if request.solicitation_answers or request.chosen_starter:
+        # Build preface based on user clarifications
+        preface = build_llm_preface(
+            request.solicitation_answers or {}, 
+            request.companion_id,
+            request.chosen_starter
+        )
+        final_message = preface + (request.chosen_starter or request.message)
+    
+    # 8) Call LLM with appropriate tier settings
     try:
         # Build system prompt based on companion and tier
         system_prompt = f"""You are {companion['name']}, a sophisticated AI companion from Throne Companions. 
