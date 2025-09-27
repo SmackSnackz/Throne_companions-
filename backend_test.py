@@ -419,16 +419,12 @@ class ThroneCompanionsAPITester:
         session_id = f"test_session_persistence_{int(time.time())}"
         
         # Send first message
+        endpoint1 = f"chat?companion_id=vanessa&message=First message in session&session_id={session_id}"
         success1, response1 = self.run_test(
             "First Message in Session", 
             "POST", 
-            "chat", 
+            endpoint1, 
             200,
-            data={
-                "companion_id": "vanessa",
-                "message": "First message in session",
-                "session_id": session_id
-            },
             headers=headers
         )
         
@@ -442,16 +438,12 @@ class ThroneCompanionsAPITester:
         time.sleep(1)
         
         # Send second message with same session_id
+        endpoint2 = f"chat?companion_id=vanessa&message=Second message in same session&session_id={session_id}"
         success2, response2 = self.run_test(
             "Second Message in Same Session", 
             "POST", 
-            "chat", 
+            endpoint2, 
             200,
-            data={
-                "companion_id": "vanessa",
-                "message": "Second message in same session",
-                "session_id": session_id
-            },
             headers=headers
         )
         
