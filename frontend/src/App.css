@@ -2121,6 +2121,83 @@ body {
   box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
 }
 
+/* Coaching message styling */
+.coaching-message {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.coaching-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.coaching-text {
+  color: var(--throne-silver);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+/* Enhanced starter button container */
+.starter-button-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.save-prompt-btn {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 0.375rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.save-prompt-btn:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: var(--throne-gold);
+}
+
+/* Tier-specific features */
+.tier-features {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.feature-btn {
+  background: rgba(74, 85, 104, 0.3);
+  border: 1px solid rgba(156, 163, 175, 0.4);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--throne-silver);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.feature-btn:hover {
+  background: rgba(74, 85, 104, 0.5);
+  border-color: var(--throne-gold);
+  color: var(--throne-gold);
+}
+
 /* Responsive solicitation panel */
 @media (max-width: 768px) {
   .solicitation-panel {
