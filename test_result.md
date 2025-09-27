@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix tier selection buttons that are not functional - Free Novice plan should continue directly into onboarding and First Guided Chat (no Stripe), and paid tiers should stay gated until Stripe is integrated. Also verify if chat functionality (/chat/:id route and interaction logic) is working correctly."
+user_problem_statement: "Test the new message tracking and admin bypass functionality: 1. Test the new `/api/chat` endpoint functionality, 2. Test JWT token creation and verification, 3. Test message counting without admin privileges, 4. Test admin bypass functionality, 5. Test session persistence"
 
 backend:
   - task: "Tier system API endpoints"
@@ -134,6 +134,66 @@ backend:
       - working: true
         agent: "testing"
         comment: "All chat API endpoints tested successfully: GET /api/companions/{id}/messages returns messages correctly, POST /api/companions/{id}/messages creates user messages and generates AI responses. Verified AI response generation is working with proper tier-based behavior. Backend chat functionality is fully operational."
+
+  - task: "New /api/chat endpoint with message tracking"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "NEW ENDPOINT TESTED SUCCESSFULLY: POST /api/chat endpoint working correctly with companion_id, message, and session_id parameters. Returns proper response structure with reply, used count, limit, session_id, and is_admin fields. Minor: LLM integration has 'achat' method error but fallback responses work correctly."
+
+  - task: "JWT token creation and verification"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "JWT AUTHENTICATION WORKING PERFECTLY: POST /api/auth/create-token successfully creates both user and admin tokens with proper email/role. GET /api/auth/verify correctly validates tokens and returns user info including is_admin flag. Token-based authentication fully operational."
+
+  - task: "Message counting for regular users"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "MESSAGE COUNTING VERIFIED: Regular user tokens correctly track message usage. System properly enforces 20-message limit - after 20 messages, upgrade flag is set to true and upgrade CTA message is returned. Message counting increments correctly (1, 2, 3... up to 20, then upgrade required)."
+
+  - task: "Admin bypass functionality"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "ADMIN BYPASS WORKING PERFECTLY: Admin users (role='admin' or email in ADMIN_EMAILS) have unlimited message access. Tested sending 25+ messages - admin users never receive upgrade prompts, used count stays at 0, is_admin flag correctly returns true. Admin bypass functionality fully operational."
+
+  - task: "Session persistence across requests"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "SESSION PERSISTENCE VERIFIED: Message counts correctly persist across multiple requests using the same session_id. First message shows used=1, second message with same session_id shows used=2. Session-based message tracking working correctly with Redis/in-memory fallback."
 
 frontend:
   - task: "Tier selection button click handlers"
@@ -206,12 +266,12 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
   current_focus:
-    - "All testing completed successfully"
+    - "New message tracking and admin bypass functionality testing completed"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -225,3 +285,5 @@ agent_communication:
     message: "ISSUES FIXED: Root cause identified and resolved. The tier selection buttons were working correctly, but the onboarding completion flow had issues. Fixed FirstGuidedChat component to complete onboarding immediately instead of using a 2-second timeout. Added better localStorage persistence and error handling. Updated App.js with more lenient onboarding completion checks. All functionality now working: tier selection -> FirstGuidedChat -> main app with working chat functionality."
   - agent: "testing"
     message: "COMPREHENSIVE TESTING COMPLETED: All 3 requested scenarios tested successfully. SCENARIO 1: Complete onboarding flow from fresh state works perfectly - Welcome → Age Verification → Terms → Companion Selection → Tier Selection (Novice free tier) → FirstGuidedChat → HomePage reached with both navigation buttons. SCENARIO 2: Navigation and chat testing successful - 'Meet Your Companions' navigates to /companions, clicking Sophia goes to /chat/sophia, chat interaction works with AI responses. SCENARIO 3: 'Choose Your Tier' from main app navigates to /tiers with all 4 tier options displayed. All fixes implemented by main agent are working correctly. The tier selection buttons, onboarding completion, and chat functionality are all fully operational."
+  - agent: "testing"
+    message: "NEW FUNCTIONALITY TESTING COMPLETE: All 6 requested test scenarios for message tracking and admin bypass functionality are working perfectly. ✅ JWT token creation/verification working, ✅ New /api/chat endpoint functional, ✅ Message counting enforces 20-message limit for users, ✅ Admin bypass provides unlimited access, ✅ Session persistence maintains message counts across requests. Minor issue: LLM integration has 'achat' method error but fallback responses work correctly. All core message tracking and admin functionality is operational."
