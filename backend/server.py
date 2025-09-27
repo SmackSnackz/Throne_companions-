@@ -23,6 +23,18 @@ from auth_utils import (
 )
 from models import *
 
+from pydantic import BaseModel
+
+# Add request models for API endpoints
+class CreateTokenRequest(BaseModel):
+    email: str
+    role: str = "user"
+
+class ChatRequest(BaseModel):
+    companion_id: str
+    message: str
+    session_id: Optional[str] = None
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
