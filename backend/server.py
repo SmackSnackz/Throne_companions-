@@ -386,22 +386,24 @@ async def chat_endpoint(
             logging.warning(f"Failed to build solicitation preface: {e}")
             final_message = request.chosen_starter or request.message
     
-    # 8) GUARANTEED LLM RESPONSE with tier-aware enhancements - PRESERVES existing functionality
+    # 9) GUARANTEED LLM RESPONSE with tone anchoring - PRESERVES + ENHANCES existing functionality
     try:
-        # Build system prompt based on companion and tier (EXISTING LOGIC PRESERVED)
+        # Build base personality descriptions (EXISTING LOGIC PRESERVED)
         companion_personalities = {
             "sophia": "You are Sophia, a wise and thoughtful philosophical companion. You provide deep insights and guide users with wisdom and clarity. Respond with elegance and thoughtfulness.",
             "aurora": "You are Aurora, a creative and energetic companion who inspires innovation and optimism. You help users unlock their creative potential with enthusiasm.",
             "vanessa": "You are Vanessa, a confident and intuitive companion. You provide direct, honest guidance with street-smart wisdom and help users navigate complex situations."
         }
         
-        system_prompt = f"""{companion_personalities.get(request.companion_id, "You are a helpful AI companion.")}
+        base_personality = companion_personalities.get(request.companion_id, "You are a helpful AI companion.")
         
-        User tier: {user_tier}
-        Memory: {'Unlimited conversation history' if is_admin else 'Limited to current session for novice tier'}
-        
-        Respond naturally in your character's voice, keeping responses conversational and engaging.
-        """
+        # ENHANCED: Build grounded system prompt with tone anchors (ADDITIVE)
+        system_prompt = tone_anchor_system.build_grounded_system_prompt(
+            request.companion_id,
+            base_personality, 
+            user_tier,
+            is_expansion_request
+        )
         
         # Use emergentintegrations LLM (EXISTING INTEGRATION PRESERVED)
         user_message = UserMessage(text=final_message)
