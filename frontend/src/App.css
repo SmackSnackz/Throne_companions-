@@ -1985,6 +1985,30 @@ body {
 .solicitation-header {
   text-align: center;
   margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.skip-solicitation {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(156, 163, 175, 0.2);
+  border: 1px solid rgba(156, 163, 175, 0.4);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  color: var(--throne-silver);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.skip-solicitation:hover {
+  background: rgba(156, 163, 175, 0.4);
+  color: white;
 }
 
 .solicitation-title {
