@@ -171,6 +171,12 @@ const ChatPage = () => {
         <div className="chat-header-content">
           <h1 className="chat-companion-name">{companion.name}</h1>
           <p className="chat-companion-status">Ready to chat</p>
+          {isAdmin && <span className="admin-badge">Admin Mode</span>}
+          {!isAdmin && (
+            <p className="usage-counter">
+              {usedCount} of {FREE_LIMIT} free messages used
+            </p>
+          )}
         </div>
       </div>
 
