@@ -220,6 +220,26 @@ const ChatPage = () => {
           </button>
         </form>
       </div>
+
+      {showUpgrade && (
+        <div className="upgrade-modal-overlay">
+          <div className="upgrade-modal">
+            <h3>Continue Your Journey</h3>
+            <p>You've reached the free message limit. Upgrade to continue chatting with {companion?.name}.</p>
+            <div className="upgrade-buttons">
+              <Link to="/tiers" className="upgrade-btn primary">
+                Upgrade Now
+              </Link>
+              <button 
+                className="upgrade-btn secondary"
+                onClick={() => setShowUpgrade(false)}
+              >
+                Save Conversation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
