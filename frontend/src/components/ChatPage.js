@@ -91,28 +91,59 @@ const ChatPage = () => {
   const sendMessage = async (e) => {
     e.preventDefault();
     
-    if (!newMessage.trim() || sending) return;
+    if (!newMessage.trim() || sending || !sessionId) return;
 
     setSending(true);
     
     try {
-      // Send user message
-      await axios.post(`${API}/companions/${id}/messages`, {
+      const token = localStorage.getItem('tc_jwt') || '';
+      
+      // Use new chat endpoint
+      const response = await axios.post(`${API}/chat`, {
         companion_id: id,
         message: newMessage.trim(),
-        is_user: true
+        session_id: sessionId
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
       });
 
-      // Clear input
+      const data = response.data;
+      
+      // Add user message to display
+      const userMsg = {
+        id: `user-${Date.now()}`,
+        message: newMessage.trim(),
+        is_user: true,
+        timestamp: new Date().toISOString()
+      };
+      
+      // Add companion response to display  
+      const companionMsg = {
+        id: `companion-${Date.now()}`,
+        message: data.reply,
+        is_user: false,
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => [...prev, userMsg, companionMsg]);
       setNewMessage("");
-
-      // Fetch updated messages (includes both user message and companion response)
-      const messagesResponse = await axios.get(`${API}/companions/${id}/messages`);
-      setMessages(messagesResponse.data);
-
+      
+      // Update usage stats
+      if (data.used !== undefined) setUsedCount(data.used);
+      if (data.upgrade) setShowUpgrade(true);
+      
     } catch (err) {
       console.error("Error sending message:", err);
-      // You might want to show an error message to the user here
+      const errorMsg = {
+        id: `error-${Date.now()}`,
+        message: "Sorry, I'm having trouble responding right now. Please try again.",
+        is_user: false,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setSending(false);
     }
