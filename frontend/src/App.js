@@ -12,11 +12,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // TEMPORARY: Always show main app for testing
-    setIsOnboarded(true);
-    setIsLoading(false);
-    return;
-    
     // Check if user has completed onboarding
     const checkOnboarding = () => {
       try {
@@ -37,9 +32,13 @@ function App() {
           }
         } else {
           console.log('No onboarding data found');
+          // For demo purposes, skip onboarding for now
+          setIsOnboarded(true);
         }
       } catch (error) {
         console.error('Error checking onboarding status:', error);
+        // For demo purposes, skip onboarding on error
+        setIsOnboarded(true);
       }
       setIsLoading(false);
     };
