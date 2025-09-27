@@ -361,18 +361,16 @@ class ThroneCompanionsAPITester:
         # Send multiple messages as admin (should not hit limit)
         results = []
         for i in range(25):  # Send more than the 20 message limit
-            test_message = f"Admin test message #{i+1} at {datetime.now().strftime('%H:%M:%S')}"
+            test_message = f"Admin test message {i+1}"
+            
+            # Use query parameters
+            endpoint = f"chat?companion_id=aurora&message={test_message}&session_id={session_id}"
             
             success, response = self.run_test(
                 f"Admin Message {i+1}/25", 
                 "POST", 
-                "chat", 
+                endpoint, 
                 200,
-                data={
-                    "companion_id": "aurora",
-                    "message": test_message,
-                    "session_id": session_id
-                },
                 headers=headers
             )
             
