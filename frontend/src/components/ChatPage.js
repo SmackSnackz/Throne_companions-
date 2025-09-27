@@ -33,16 +33,15 @@ const ChatPage = () => {
     }
     setSessionId(sid);
     
-    // Check if user is admin (for demo, create admin token)
+    // Check if user has an existing admin token, otherwise create user token
     const createDemoAuth = async () => {
       try {
-        // For demo purposes, check if we have an admin token
         let token = localStorage.getItem('tc_jwt');
         if (!token) {
-          // Create a demo user token (or admin for testing)
+          // Create a regular user token for public users
           const response = await axios.post(`${API}/auth/create-token`, {
-            email: "demo@thronecompanions.com",
-            role: "user" // Change to "admin" for testing admin features
+            email: "user@thronecompanions.com",
+            role: "user" // Public users are regular users
           });
           token = response.data.token;
           localStorage.setItem('tc_jwt', token);
