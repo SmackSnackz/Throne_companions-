@@ -194,6 +194,312 @@ class ThroneCompanionsAPITester:
         """Test accessing messages for non-existent companion"""
         return self.run_test("Invalid Companion Messages", "GET", "companions/invalid/messages", 404)
 
+    def test_jwt_token_creation(self):
+        """Test JWT token creation for both user and admin"""
+        print("\n🔐 Testing JWT Token Creation...")
+        
+        # Test user token creation
+        success, response = self.run_test(
+            "Create User Token", 
+            "POST", 
+            "auth/create-token?email=testuser@example.com&role=user", 
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            self.user_token = response.get('token')
+            print(f"   ✅ User token created: {self.user_token[:20]}...")
+            print(f"   Email: {response.get('email')}, Role: {response.get('role')}")
+        
+        # Test admin token creation
+        success, response = self.run_test(
+            "Create Admin Token", 
+            "POST", 
+            "auth/create-token?email=admin@thronecompanions.com&role=admin", 
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            self.admin_token = response.get('token')
+            print(f"   ✅ Admin token created: {self.admin_token[:20]}...")
+            print(f"   Email: {response.get('email')}, Role: {response.get('role')}")
+        
+        return success, response
+
+    def test_jwt_token_verification(self):
+        """Test JWT token verification"""
+        print("\n🔍 Testing JWT Token Verification...")
+        
+        if not self.user_token:
+            print("❌ No user token available for verification")
+            return False, {}
+        
+        # Test user token verification
+        headers = {'Authorization': f'Bearer {self.user_token}'}
+        success, response = self.run_test(
+            "Verify User Token", 
+            "GET", 
+            "auth/verify", 
+            200,
+            headers=headers
+        )
+        
+        if success and isinstance(response, dict):
+            print(f"   ✅ User token verified - Email: {response.get('email')}")
+            print(f"   Role: {response.get('role')}, Is Admin: {response.get('is_admin')}")
+        
+        # Test admin token verification
+        if self.admin_token:
+            headers = {'Authorization': f'Bearer {self.admin_token}'}
+            success, response = self.run_test(
+                "Verify Admin Token", 
+                "GET", 
+                "auth/verify", 
+                200,
+                headers=headers
+            )
+            
+            if success and isinstance(response, dict):
+                print(f"   ✅ Admin token verified - Email: {response.get('email')}")
+                print(f"   Role: {response.get('role')}, Is Admin: {response.get('is_admin')}")
+        
+        return success, response
+
+    def test_new_chat_endpoint_basic(self):
+        """Test the new /api/chat endpoint basic functionality"""
+        print("\n💬 Testing New Chat Endpoint...")
+        
+        if not self.user_token:
+            print("❌ No user token available for chat testing")
+            return False, {}
+        
+        # Test chat with user token
+        headers = {'Authorization': f'Bearer {self.user_token}'}
+        test_message = f"Hello! This is a test message at {datetime.now().strftime('%H:%M:%S')}"
+        
+        success, response = self.run_test(
+            "Chat with User Token", 
+            "POST", 
+            "chat", 
+            200,
+            data={
+                "companion_id": "sophia",
+                "message": test_message,
+                "session_id": "test_session_basic"
+            },
+            headers=headers
+        )
+        
+        if success and isinstance(response, dict):
+            print(f"   ✅ Chat response received")
+            print(f"   Reply: {response.get('reply', 'No reply')[:100]}...")
+            print(f"   Used: {response.get('used')}/{response.get('limit')}")
+            print(f"   Session ID: {response.get('session_id')}")
+            print(f"   Is Admin: {response.get('is_admin')}")
+            print(f"   Upgrade Required: {response.get('upgrade', False)}")
+        
+        return success, response
+
+    def test_message_counting_user(self):
+        """Test message counting for regular users (should hit limit)"""
+        print("\n📊 Testing Message Counting for Regular Users...")
+        
+        if not self.user_token:
+            print("❌ No user token available for message counting test")
+            return False, {}
+        
+        headers = {'Authorization': f'Bearer {self.user_token}'}
+        session_id = f"test_session_counting_{int(time.time())}"
+        
+        # Send multiple messages to test counting
+        results = []
+        for i in range(25):  # Send more than the 20 message limit
+            test_message = f"Test message #{i+1} at {datetime.now().strftime('%H:%M:%S')}"
+            
+            success, response = self.run_test(
+                f"Message {i+1}/25", 
+                "POST", 
+                "chat", 
+                200,
+                data={
+                    "companion_id": "sophia",
+                    "message": test_message,
+                    "session_id": session_id
+                },
+                headers=headers
+            )
+            
+            if success and isinstance(response, dict):
+                used = response.get('used', 0)
+                limit = response.get('limit', 20)
+                upgrade = response.get('upgrade', False)
+                
+                print(f"   Message {i+1}: Used {used}/{limit}, Upgrade: {upgrade}")
+                
+                # Check if we hit the limit
+                if upgrade and used >= limit:
+                    print(f"   ✅ Hit message limit at message {i+1} - upgrade required")
+                    break
+                    
+                results.append((i+1, used, upgrade))
+                
+                # Small delay to avoid overwhelming the API
+                time.sleep(0.1)
+            else:
+                print(f"   ❌ Failed to send message {i+1}")
+                break
+        
+        return len(results) > 0, results
+
+    def test_admin_bypass_functionality(self):
+        """Test admin bypass functionality (unlimited messages)"""
+        print("\n👑 Testing Admin Bypass Functionality...")
+        
+        if not self.admin_token:
+            print("❌ No admin token available for bypass testing")
+            return False, {}
+        
+        headers = {'Authorization': f'Bearer {self.admin_token}'}
+        session_id = f"test_session_admin_{int(time.time())}"
+        
+        # Send multiple messages as admin (should not hit limit)
+        results = []
+        for i in range(25):  # Send more than the 20 message limit
+            test_message = f"Admin test message #{i+1} at {datetime.now().strftime('%H:%M:%S')}"
+            
+            success, response = self.run_test(
+                f"Admin Message {i+1}/25", 
+                "POST", 
+                "chat", 
+                200,
+                data={
+                    "companion_id": "aurora",
+                    "message": test_message,
+                    "session_id": session_id
+                },
+                headers=headers
+            )
+            
+            if success and isinstance(response, dict):
+                used = response.get('used', 0)
+                limit = response.get('limit', 20)
+                upgrade = response.get('upgrade', False)
+                is_admin = response.get('is_admin', False)
+                
+                print(f"   Admin Message {i+1}: Used {used}/{limit}, Upgrade: {upgrade}, Is Admin: {is_admin}")
+                
+                # Admin should never get upgrade message
+                if upgrade:
+                    print(f"   ❌ Admin got upgrade message - bypass not working!")
+                    break
+                    
+                if not is_admin:
+                    print(f"   ❌ is_admin flag is False - should be True for admin")
+                    
+                results.append((i+1, used, upgrade, is_admin))
+                
+                # Small delay to avoid overwhelming the API
+                time.sleep(0.1)
+            else:
+                print(f"   ❌ Failed to send admin message {i+1}")
+                break
+        
+        # Check if admin bypass worked (no upgrade messages)
+        upgrade_messages = [r for r in results if r[2]]  # r[2] is upgrade flag
+        if not upgrade_messages:
+            print(f"   ✅ Admin bypass working - sent {len(results)} messages without upgrade prompt")
+        else:
+            print(f"   ❌ Admin bypass failed - got {len(upgrade_messages)} upgrade prompts")
+        
+        return len(results) > 0, results
+
+    def test_session_persistence(self):
+        """Test session persistence across multiple requests"""
+        print("\n🔄 Testing Session Persistence...")
+        
+        if not self.user_token:
+            print("❌ No user token available for session persistence test")
+            return False, {}
+        
+        headers = {'Authorization': f'Bearer {self.user_token}'}
+        session_id = f"test_session_persistence_{int(time.time())}"
+        
+        # Send first message
+        success1, response1 = self.run_test(
+            "First Message in Session", 
+            "POST", 
+            "chat", 
+            200,
+            data={
+                "companion_id": "vanessa",
+                "message": "First message in session",
+                "session_id": session_id
+            },
+            headers=headers
+        )
+        
+        if not success1:
+            return False, {}
+        
+        used1 = response1.get('used', 0)
+        print(f"   First message - Used: {used1}")
+        
+        # Wait a moment
+        time.sleep(1)
+        
+        # Send second message with same session_id
+        success2, response2 = self.run_test(
+            "Second Message in Same Session", 
+            "POST", 
+            "chat", 
+            200,
+            data={
+                "companion_id": "vanessa",
+                "message": "Second message in same session",
+                "session_id": session_id
+            },
+            headers=headers
+        )
+        
+        if not success2:
+            return False, {}
+        
+        used2 = response2.get('used', 0)
+        print(f"   Second message - Used: {used2}")
+        
+        # Check if count persisted and incremented
+        if used2 == used1 + 1:
+            print(f"   ✅ Session persistence working - count incremented from {used1} to {used2}")
+            return True, (used1, used2)
+        else:
+            print(f"   ❌ Session persistence failed - expected {used1 + 1}, got {used2}")
+            return False, (used1, used2)
+
+    def test_chat_endpoint_comprehensive(self):
+        """Comprehensive test of the new chat endpoint"""
+        print("\n🧪 Running Comprehensive Chat Endpoint Tests...")
+        
+        # Test all required scenarios
+        tests = [
+            ("JWT Token Creation", self.test_jwt_token_creation),
+            ("JWT Token Verification", self.test_jwt_token_verification),
+            ("Basic Chat Functionality", self.test_new_chat_endpoint_basic),
+            ("Message Counting (User)", self.test_message_counting_user),
+            ("Admin Bypass", self.test_admin_bypass_functionality),
+            ("Session Persistence", self.test_session_persistence)
+        ]
+        
+        results = {}
+        for test_name, test_func in tests:
+            try:
+                success, data = test_func()
+                results[test_name] = (success, data)
+            except Exception as e:
+                print(f"   ❌ {test_name} failed with error: {e}")
+                results[test_name] = (False, str(e))
+        
+        return results
+
 def main():
     print("🏰 Starting Throne Companions API Tests")
     print("=" * 50)
