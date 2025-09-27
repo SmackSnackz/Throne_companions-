@@ -126,15 +126,24 @@ const ChatPage = () => {
 
       const data = response.data;
       
-      // Check if we got a solicitation response
-      if (data.type === 'solicitation') {
-        setSolicitation(data);
+      // Check response type from unified system
+      if (data.type === 'distress_response') {
+        setDistressResponse(data);
+        setSolicitation(null);
         setSending(false);
         return;
       }
       
-      // Clear any existing solicitation and process normal response
+      if (data.type === 'solicitation') {
+        setSolicitation(data);
+        setDistressResponse(null);
+        setSending(false);
+        return;
+      }
+      
+      // Clear any special response modes and process normal response
       setSolicitation(null);
+      setDistressResponse(null);
       
       // Handle normal chat response (data.type === 'answer' or undefined)
       const userMsg = {
