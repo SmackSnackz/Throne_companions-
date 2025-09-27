@@ -176,6 +176,10 @@ const ChatPage = () => {
   const handleSolicitationSubmit = (answers, chosenStarter = null) => {
     sendMessage(null, answers, chosenStarter);
   };
+  
+  const clearSolicitation = () => {
+    setSolicitation(null);
+  };
 
   if (loading) {
     return <div className="loading">Loading companion...</div>;
