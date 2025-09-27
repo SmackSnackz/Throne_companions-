@@ -1953,6 +1953,24 @@ body {
   color: var(--throne-black);
 }
 
+/* Admin toggle button */
+.admin-toggle {
+  background: linear-gradient(135deg, var(--throne-gold), #ffd700);
+  color: var(--throne-black);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.admin-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
 /* Click to Select indicator */
 
 /* Responsive Design */
