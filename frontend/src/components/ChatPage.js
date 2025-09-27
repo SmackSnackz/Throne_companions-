@@ -89,22 +89,34 @@ const ChatPage = () => {
     }
   }, [id]);
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
+  const sendMessage = async (e, solicitationAnswers = null, chosenStarter = null) => {
+    if (e) e.preventDefault();
     
-    if (!newMessage.trim() || sending || !sessionId) return;
+    if ((!newMessage.trim() && !chosenStarter) || sending || !sessionId) return;
 
     setSending(true);
+    setSolicitation(null); // Clear any pending solicitation
     
     try {
       const token = localStorage.getItem('tc_jwt') || '';
       
-      // Use new chat endpoint
-      const response = await axios.post(`${API}/chat`, {
+      // Prepare request payload
+      const requestData = {
         companion_id: id,
-        message: newMessage.trim(),
+        message: chosenStarter || newMessage.trim(),
         session_id: sessionId
-      }, {
+      };
+      
+      // Add solicitation data if provided
+      if (solicitationAnswers) {
+        requestData.solicitation_answers = solicitationAnswers;
+      }
+      if (chosenStarter) {
+        requestData.chosen_starter = chosenStarter;
+      }
+      
+      // Use new chat endpoint
+      const response = await axios.post(`${API}/chat`, requestData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': token ? `Bearer ${token}` : ''
@@ -113,10 +125,17 @@ const ChatPage = () => {
 
       const data = response.data;
       
+      // Check if we got a solicitation response
+      if (data.type === 'solicitation') {
+        setSolicitation(data);
+        setSending(false);
+        return;
+      }
+      
       // Add user message to display
       const userMsg = {
         id: `user-${Date.now()}`,
-        message: newMessage.trim(),
+        message: chosenStarter || newMessage.trim(),
         is_user: true,
         timestamp: new Date().toISOString()
       };
@@ -148,6 +167,10 @@ const ChatPage = () => {
     } finally {
       setSending(false);
     }
+  };
+  
+  const handleSolicitationSubmit = (answers, chosenStarter = null) => {
+    sendMessage(null, answers, chosenStarter);
   };
 
   if (loading) {
