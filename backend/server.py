@@ -384,6 +384,15 @@ async def chat_endpoint(
     except Exception as e:
         logging.error(f"Database save failed: {e}")
     
+    return {
+        "reply": reply_text,
+        "used": new_count,
+        "limit": FREE_LIMIT,
+        "upgrade": False,
+        "session_id": session_id,
+        "is_admin": is_admin
+    }
+
 @api_router.post("/auth/create-token")
 async def create_test_token(email: str, role: str = "user"):
     """Create JWT token for testing (remove in production)"""
