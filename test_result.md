@@ -283,8 +283,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "New message tracking and admin bypass functionality testing completed"
-  stuck_tasks: []
+    - "Frontend-Backend API Integration for Message Tracking"
+  stuck_tasks:
+    - "Frontend-Backend API Integration for Message Tracking"
   test_all: false
   test_priority: "high_first"
 
