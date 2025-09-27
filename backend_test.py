@@ -425,23 +425,30 @@ class ThroneCompanionsAPITester:
         return len(results) > 0, results
 
     def test_session_persistence(self):
-        """Test session persistence across multiple requests"""
-        print("\n🔄 Testing Session Persistence...")
+        """Test session persistence across multiple requests with JSON body"""
+        print("\n🔄 Testing Session Persistence (FIXED - JSON Body)...")
         
         if not self.user_token:
             print("❌ No user token available for session persistence test")
             return False, {}
         
-        headers = {'Authorization': f'Bearer {self.user_token}'}
+        headers = {
+            'Authorization': f'Bearer {self.user_token}',
+            'Content-Type': 'application/json'
+        }
         session_id = f"test_session_persistence_{int(time.time())}"
         
         # Send first message
-        endpoint1 = f"chat?companion_id=vanessa&message=First message in session&session_id={session_id}"
         success1, response1 = self.run_test(
-            "First Message in Session", 
+            "First Message in Session (JSON Body)", 
             "POST", 
-            endpoint1, 
+            "chat", 
             200,
+            data={
+                "companion_id": "vanessa",
+                "message": "First message in session",
+                "session_id": session_id
+            },
             headers=headers
         )
         
@@ -455,12 +462,16 @@ class ThroneCompanionsAPITester:
         time.sleep(1)
         
         # Send second message with same session_id
-        endpoint2 = f"chat?companion_id=vanessa&message=Second message in same session&session_id={session_id}"
         success2, response2 = self.run_test(
-            "Second Message in Same Session", 
+            "Second Message in Same Session (JSON Body)", 
             "POST", 
-            endpoint2, 
+            "chat", 
             200,
+            data={
+                "companion_id": "vanessa",
+                "message": "Second message in same session",
+                "session_id": session_id
+            },
             headers=headers
         )
         
