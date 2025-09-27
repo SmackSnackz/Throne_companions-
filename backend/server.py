@@ -388,7 +388,7 @@ async def chat_endpoint(
     else:
         new_count = get_count(session_key)
     
-    # 8) Save messages to database (existing logic)
+    # 10) Save messages to database (existing logic)
     try:
         # Save user message
         user_msg = ChatMessage(
