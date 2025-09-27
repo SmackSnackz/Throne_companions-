@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const SolicitationPanel = ({ questions, starterPrompts, tag, onSubmit, companionName }) => {
+const SolicitationPanel = ({ questions, starterPrompts, tag, onSubmit, companionName, onSkip }) => {
   const [answers, setAnswers] = useState({});
   
   const handleAnswerChange = (questionIndex, value) => {
@@ -21,6 +21,7 @@ const SolicitationPanel = ({ questions, starterPrompts, tag, onSubmit, companion
           Let me understand what you need...
         </h3>
         <div className="solicitation-tag">{tag}</div>
+        <button className="skip-solicitation" onClick={onSkip}>Skip ×</button>
       </div>
 
       <div className="solicitation-questions">
