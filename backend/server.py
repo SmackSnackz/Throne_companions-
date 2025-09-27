@@ -413,11 +413,11 @@ async def chat_endpoint(
         llm_response = await companion_chat.send_message(user_message)
         reply_text = llm_response if llm_response else "I apologize, but I'm having difficulty connecting right now. Please try again."
         
-        # Apply tier-based response limits (NEW - ADDITIVE FEATURE)
-        if not request.deep_dive_requested:
-            reply_text, was_capped = tier_prompt_manager.apply_response_limits(reply_text, user_tier)
+        # Apply unified tier-based response limits (ADDITIVE feature)
+        if not request.deep_dive_requested and not request.expansion_requested:
+            reply_text, was_capped = unified_prompt_system.apply_tier_limits(reply_text, user_tier)
             if was_capped:
-                tier_prompt_manager.track_prompt_event("response_length_capped", {"tier": user_tier})
+                logging.info(f"Response capped for tier: {user_tier}")
         
     except Exception as e:
         logging.error(f"LLM call failed: {e}")
