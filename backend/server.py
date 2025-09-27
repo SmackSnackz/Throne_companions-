@@ -319,35 +319,32 @@ async def chat_endpoint(
     session_id = request.session_id or f"session:{email or 'anon'}:{int(time.time())}"
     session_key = generate_session_key(session_id)
     
-    # 4) Enhanced prompt solicitation with tier awareness - ADDITIVE to existing logic
+    # 4) UNIFIED PROMPT SYSTEM - Master logic flow (PRESERVES all existing functionality)
     if not request.solicitation_answers and not request.chosen_starter:
         try:
-            # First try existing solicitation logic (preserves current behavior)
-            solicitation = detect_and_solicit(request.message, request.companion_id)
-            if solicitation:
-                return solicitation
-            
-            # If existing logic doesn't trigger, try tier-aware prompting  
+            # Get user tier for analysis
             user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
-            enhanced_solicitation = tier_prompt_manager.build_enhanced_solicitation(
+            
+            # Master analysis: Distress → Solicitation → Normal
+            mode_type, response_data = unified_prompt_system.analyze_user_input(
                 request.message, 
-                request.companion_id, 
-                user_tier,
-                request.session_starter_count or 0
+                user_tier, 
+                request.companion_id
             )
             
-            if enhanced_solicitation:
-                # Track prompt mechanism usage
-                tier_prompt_manager.track_prompt_event("prompt_mechanism_triggered", {
-                    "tier": user_tier,
-                    "persona": request.companion_id,
-                    "input": request.message[:50]  # First 50 chars for privacy
-                })
-                return enhanced_solicitation
-                
+            # Handle distress mode (highest priority)
+            if mode_type == "distress":
+                return response_data
+            
+            # Handle solicitation mode (second priority)  
+            elif mode_type == "solicitation":
+                return response_data
+            
+            # Normal mode continues to existing LLM flow below
+            
         except Exception as e:
-            logging.warning(f"Prompt mechanism failed: {e}, proceeding with normal response")
-            # Continue to normal response if prompting fails
+            logging.warning(f"Unified prompt system failed: {e}, proceeding with normal response")
+            # Continue to normal response if system fails
     
     # 5) Check message cap for non-admin users
     if not is_admin:
