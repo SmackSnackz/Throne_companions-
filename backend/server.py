@@ -285,9 +285,7 @@ def handle_user_request(user_data, message_data):
 
 @api_router.post("/chat")
 async def chat_endpoint(
-    companion_id: str, 
-    message: str,
-    session_id: Optional[str] = None,
+    request: ChatRequest,
     authorization: Optional[str] = Header(None)
 ):
     """
@@ -299,7 +297,7 @@ async def chat_endpoint(
         {"id": "aurora", "name": "Aurora"}, 
         {"id": "vanessa", "name": "Vanessa"}
     ]
-    companion = next((c for c in companions_data if c["id"] == companion_id), None)
+    companion = next((c for c in companions_data if c["id"] == request.companion_id), None)
     if not companion:
         raise HTTPException(status_code=404, detail="Companion not found")
     
@@ -310,8 +308,7 @@ async def chat_endpoint(
     is_admin = is_admin_user(payload)
     
     # 3) Ensure session ID
-    if not session_id:
-        session_id = f"session:{email or 'anon'}:{int(time.time())}"
+    session_id = request.session_id or f"session:{email or 'anon'}:{int(time.time())}"
     session_key = generate_session_key(session_id)
     
     # 4) Check message cap for non-admin users
