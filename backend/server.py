@@ -292,7 +292,7 @@ async def chat_endpoint(
     authorization: Optional[str] = Header(None)
 ):
     """
-    New chat endpoint with message tracking and admin bypass
+    Chat endpoint with optional solicitation layer and guaranteed fallback
     """
     # 1) Verify companion exists
     companions_data = [
@@ -314,11 +314,15 @@ async def chat_endpoint(
     session_id = request.session_id or f"session:{email or 'anon'}:{int(time.time())}"
     session_key = generate_session_key(session_id)
     
-    # 4) Check for prompt solicitation (unless user provided clarifications)
+    # 4) Check for prompt solicitation ONLY if no clarifications provided
     if not request.solicitation_answers and not request.chosen_starter:
-        solicitation = detect_and_solicit(request.message, request.companion_id)
-        if solicitation:
-            return solicitation
+        try:
+            solicitation = detect_and_solicit(request.message, request.companion_id)
+            if solicitation:
+                return solicitation
+        except Exception as e:
+            logging.warning(f"Solicitation check failed: {e}, proceeding with normal response")
+            # Continue to normal response if solicitation fails
     
     # 5) Check message cap for non-admin users
     if not is_admin:
@@ -337,31 +341,36 @@ async def chat_endpoint(
     # 6) Get user tier (admin gets best tier, others get their actual tier)
     user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
     
-    # 7) Build enhanced system prompt with solicitation context if provided
+    # 7) Prepare message (with solicitation context if provided)
     final_message = request.message
     if request.solicitation_answers or request.chosen_starter:
         # Build preface based on user clarifications
-        preface = build_llm_preface(
-            request.solicitation_answers or {}, 
-            request.companion_id,
-            request.chosen_starter
-        )
-        final_message = preface + (request.chosen_starter or request.message)
+        try:
+            preface = build_llm_preface(
+                request.solicitation_answers or {}, 
+                request.companion_id,
+                request.chosen_starter
+            )
+            final_message = preface + (request.chosen_starter or request.message)
+        except Exception as e:
+            logging.warning(f"Failed to build solicitation preface: {e}")
+            final_message = request.chosen_starter or request.message
     
-    # 8) Call LLM with appropriate tier settings
+    # 8) GUARANTEED LLM RESPONSE - This always executes for normal chat flow
     try:
         # Build system prompt based on companion and tier
-        system_prompt = f"""You are {companion['name']}, a sophisticated AI companion from Throne Companions. 
+        companion_personalities = {
+            "sophia": "You are Sophia, a wise and thoughtful philosophical companion. You provide deep insights and guide users with wisdom and clarity. Respond with elegance and thoughtfulness.",
+            "aurora": "You are Aurora, a creative and energetic companion who inspires innovation and optimism. You help users unlock their creative potential with enthusiasm.",
+            "vanessa": "You are Vanessa, a confident and intuitive companion. You provide direct, honest guidance with street-smart wisdom and help users navigate complex situations."
+        }
+        
+        system_prompt = f"""{companion_personalities.get(request.companion_id, "You are a helpful AI companion.")}
         
         User tier: {user_tier}
+        Memory: {'Unlimited conversation history' if is_admin else 'Limited to current session for novice tier'}
         
-        Personality traits:
-        - Sophia: Wise, thoughtful, philosophical, articulate
-        - Aurora: Creative, energetic, optimistic, inspiring  
-        - Vanessa: Mysterious, confident, intuitive, alluring
-        
-        Respond naturally as {companion['name']} would, keeping responses conversational and engaging.
-        Memory: {'Unlimited' if is_admin else '24 hours for novice tier'}
+        Respond naturally in your character's voice, keeping responses conversational and engaging.
         """
         
         # Use emergentintegrations LLM
@@ -374,11 +383,12 @@ async def chat_endpoint(
         
         # Get LLM response
         llm_response = await companion_chat.send_message(user_message)
-        reply_text = llm_response if llm_response else "I'm having trouble responding right now."
+        reply_text = llm_response if llm_response else "I apologize, but I'm having difficulty connecting right now. Please try again."
         
     except Exception as e:
         logging.error(f"LLM call failed: {e}")
-        reply_text = "I apologize, but I'm having difficulty connecting right now. Please try again."
+        # Fallback response to guarantee user always gets a response
+        reply_text = f"I apologize, but I'm having some technical difficulties right now. Please try again in a moment, or let me know if you'd like me to help you with something specific."
     
     # 9) Increment counter for non-admin users AFTER successful reply
     if not is_admin:
@@ -413,7 +423,9 @@ async def chat_endpoint(
     except Exception as e:
         logging.error(f"Database save failed: {e}")
     
+    # 11) GUARANTEED RESPONSE - Always return a proper chat response
     return {
+        "type": "answer",
         "reply": reply_text,
         "used": new_count,
         "limit": FREE_LIMIT,
