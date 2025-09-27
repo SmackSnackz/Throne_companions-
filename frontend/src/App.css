@@ -1861,6 +1861,100 @@ body {
   }
 }
 
+/* Admin badge and usage counter */
+.admin-badge {
+  background: linear-gradient(135deg, #ffd700, #ffed4a);
+  color: #1a202c;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 1rem;
+}
+
+.usage-counter {
+  color: var(--throne-silver);
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+  opacity: 0.8;
+}
+
+/* Upgrade modal */
+.upgrade-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.upgrade-modal {
+  background: var(--throne-black);
+  border: 2px solid var(--throne-gold);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 400px;
+  text-align: center;
+}
+
+.upgrade-modal h3 {
+  color: var(--throne-gold);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.upgrade-modal p {
+  color: var(--throne-silver);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.upgrade-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.upgrade-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upgrade-btn.primary {
+  background: linear-gradient(135deg, var(--throne-gold), #ffd700);
+  color: var(--throne-black);
+}
+
+.upgrade-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.upgrade-btn.secondary {
+  background: transparent;
+  color: var(--throne-silver);
+  border: 1px solid var(--throne-silver);
+}
+
+.upgrade-btn.secondary:hover {
+  background: var(--throne-silver);
+  color: var(--throne-black);
+}
+
+/* Click to Select indicator */
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .compliance-flow {
