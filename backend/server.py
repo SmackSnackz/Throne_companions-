@@ -391,23 +391,26 @@ async def chat_endpoint(
             logging.warning(f"Failed to build solicitation preface: {e}")
             final_message = request.chosen_starter or request.message
     
-    # 9) GUARANTEED LLM RESPONSE with tone anchoring - PRESERVES + ENHANCES existing functionality
+    # 9) MASTER PROMPT SYSTEM - Insert Master Prompt as global system prompt (King Sol Specification)
     try:
-        # Build base personality descriptions (EXISTING LOGIC PRESERVED)
-        companion_personalities = {
-            "sophia": "You are Sophia, a wise and thoughtful philosophical companion. You provide deep insights and guide users with wisdom and clarity. Respond with elegance and thoughtfulness.",
-            "aurora": "You are Aurora, a creative and energetic companion who inspires innovation and optimism. You help users unlock their creative potential with enthusiasm.",
-            "vanessa": "You are Vanessa, a confident and intuitive companion. You provide direct, honest guidance with street-smart wisdom and help users navigate complex situations."
-        }
+        # Get user tier for additional context
+        user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
         
-        base_personality = companion_personalities.get(request.companion_id, "You are a helpful AI companion.")
+        # Build Master Prompt with dynamic variables (UserMode, AffectionDial, MemorySummary)
+        additional_context = f"""
+User tier: {user_tier}
+Memory: {'Unlimited conversation history' if is_admin else 'Limited to current session for novice tier'}
+
+Current session context: This is an active conversation. Stay present and emotionally connected.
+"""
         
-        # ENHANCED: Build grounded system prompt with tone anchors (ADDITIVE)
-        system_prompt = tone_anchor_system.build_grounded_system_prompt(
-            request.companion_id,
-            base_personality, 
-            user_tier,
-            is_expansion_request
+        # MASTER PROMPT INSERTION (Following Developer Note exactly)
+        system_prompt = master_prompt_system.build_complete_system_prompt(
+            companion_id=request.companion_id,
+            user_mode=request.user_mode or "Confidant",
+            affection_dial=request.affection_dial or 2,
+            memory_summary=request.memory_summary or "",
+            additional_context=additional_context
         )
         
         # Use emergentintegrations LLM (EXISTING INTEGRATION PRESERVED)
