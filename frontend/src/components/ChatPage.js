@@ -115,6 +115,9 @@ const ChatPage = () => {
       if (chosenStarter) {
         requestData.chosen_starter = chosenStarter;
       }
+      if (isExpansion) {
+        requestData.expansion_requested = true;
+      }
       
       // Use new chat endpoint
       const response = await axios.post(`${API}/chat`, requestData, {
