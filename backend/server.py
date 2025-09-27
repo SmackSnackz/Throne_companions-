@@ -35,6 +35,8 @@ class ChatRequest(BaseModel):
     companion_id: str
     message: str
     session_id: Optional[str] = None
+    solicitation_answers: Optional[dict] = None
+    chosen_starter: Optional[str] = None
 
 
 ROOT_DIR = Path(__file__).parent
