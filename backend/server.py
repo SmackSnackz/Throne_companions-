@@ -403,11 +403,11 @@ async def chat_endpoint(
     }
 
 @api_router.post("/auth/create-token")
-async def create_test_token(email: str, role: str = "user"):
+async def create_test_token(request: CreateTokenRequest):
     """Create JWT token for testing (remove in production)"""
     from auth_utils import create_jwt_token
-    token = create_jwt_token(email, role)
-    return {"token": token, "email": email, "role": role}
+    token = create_jwt_token(request.email, request.role)
+    return {"token": token, "email": request.email, "role": request.role}
 
 @api_router.get("/auth/verify")
 async def verify_token(authorization: Optional[str] = Header(None)):
