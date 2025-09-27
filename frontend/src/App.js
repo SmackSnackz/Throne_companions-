@@ -12,6 +12,11 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // TEMPORARY: Always show main app for testing
+    setIsOnboarded(true);
+    setIsLoading(false);
+    return;
+    
     // Check if user has completed onboarding
     const checkOnboarding = () => {
       try {
