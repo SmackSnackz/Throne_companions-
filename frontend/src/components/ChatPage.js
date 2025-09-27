@@ -4,6 +4,7 @@ import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+const FREE_LIMIT = 20;
 
 const ChatPage = () => {
   const { id } = useParams();
@@ -13,6 +14,10 @@ const ChatPage = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
+  const [sessionId, setSessionId] = useState("");
+  const [usedCount, setUsedCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
