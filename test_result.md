@@ -286,9 +286,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Frontend-Backend API Integration for Message Tracking"
+    []
   stuck_tasks:
-    - "Frontend-Backend API Integration for Message Tracking"
+    []
   test_all: false
   test_priority: "high_first"
 
