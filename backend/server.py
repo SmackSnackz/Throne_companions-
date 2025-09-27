@@ -417,8 +417,15 @@ async def chat_endpoint(
         llm_response = await companion_chat.send_message(user_message)
         reply_text = llm_response if llm_response else "I apologize, but I'm having difficulty connecting right now. Please try again."
         
+        # ENHANCED: Apply tone anchor grounding filter (ADDITIVE)
+        reply_text = tone_anchor_system.apply_grounding_filter(
+            reply_text, 
+            request.companion_id, 
+            is_expansion_request
+        )
+        
         # Apply unified tier-based response limits (ADDITIVE feature)
-        if not request.deep_dive_requested and not request.expansion_requested:
+        if not request.deep_dive_requested and not is_expansion_request:
             reply_text, was_capped = unified_prompt_system.apply_tier_limits(reply_text, user_tier)
             if was_capped:
                 logging.info(f"Response capped for tier: {user_tier}")
