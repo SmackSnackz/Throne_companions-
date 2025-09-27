@@ -169,8 +169,9 @@ const ChatPage = () => {
       
     } catch (err) {
       console.error("Error sending message:", err);
-      // Clear solicitation on error
+      // Clear all special response modes on error
       setSolicitation(null);
+      setDistressResponse(null);
       const errorMsg = {
         id: `error-${Date.now()}`,
         message: "Sorry, I'm having trouble responding right now. Please try again.",
@@ -187,8 +188,14 @@ const ChatPage = () => {
     sendMessage(null, answers, chosenStarter);
   };
   
-  const clearSolicitation = () => {
+  const handleDistressExpansion = (expansionRequest) => {
+    // Send expansion request  
+    sendMessage({ preventDefault: () => {} }, null, expansionRequest, true);
+  };
+  
+  const clearAllSpecialModes = () => {
     setSolicitation(null);
+    setDistressResponse(null);
   };
 
   if (loading) {
