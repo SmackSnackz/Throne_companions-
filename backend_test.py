@@ -195,15 +195,16 @@ class ThroneCompanionsAPITester:
         return self.run_test("Invalid Companion Messages", "GET", "companions/invalid/messages", 404)
 
     def test_jwt_token_creation(self):
-        """Test JWT token creation for both user and admin"""
-        print("\n🔐 Testing JWT Token Creation...")
+        """Test JWT token creation for both user and admin with JSON body"""
+        print("\n🔐 Testing JWT Token Creation (FIXED - JSON Body)...")
         
-        # Test user token creation
+        # Test user token creation with JSON body
         success, response = self.run_test(
-            "Create User Token", 
+            "Create User Token (JSON Body)", 
             "POST", 
-            "auth/create-token?email=testuser@example.com&role=user", 
-            200
+            "auth/create-token", 
+            200,
+            data={"email": "test@example.com", "role": "user"}
         )
         
         if success and isinstance(response, dict):
@@ -211,12 +212,13 @@ class ThroneCompanionsAPITester:
             print(f"   ✅ User token created: {self.user_token[:20]}...")
             print(f"   Email: {response.get('email')}, Role: {response.get('role')}")
         
-        # Test admin token creation
+        # Test admin token creation with JSON body
         success, response = self.run_test(
-            "Create Admin Token", 
+            "Create Admin Token (JSON Body)", 
             "POST", 
-            "auth/create-token?email=admin@thronecompanions.com&role=admin", 
-            200
+            "auth/create-token", 
+            200,
+            data={"email": "admin@thronecompanions.com", "role": "admin"}
         )
         
         if success and isinstance(response, dict):
