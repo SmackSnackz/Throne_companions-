@@ -38,6 +38,8 @@ class ChatRequest(BaseModel):
     session_id: Optional[str] = None
     solicitation_answers: Optional[dict] = None
     chosen_starter: Optional[str] = None
+    session_starter_count: Optional[int] = 0
+    deep_dive_requested: Optional[bool] = False
 
 
 ROOT_DIR = Path(__file__).parent
