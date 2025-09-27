@@ -306,14 +306,17 @@ class ThroneCompanionsAPITester:
         return success, response
 
     def test_message_counting_user(self):
-        """Test message counting for regular users (should hit limit)"""
-        print("\n📊 Testing Message Counting for Regular Users...")
+        """Test message counting for regular users (should hit limit) with JSON body"""
+        print("\n📊 Testing Message Counting for Regular Users (FIXED - JSON Body)...")
         
         if not self.user_token:
             print("❌ No user token available for message counting test")
             return False, {}
         
-        headers = {'Authorization': f'Bearer {self.user_token}'}
+        headers = {
+            'Authorization': f'Bearer {self.user_token}',
+            'Content-Type': 'application/json'
+        }
         session_id = f"test_session_counting_{int(time.time())}"
         
         # Send multiple messages to test counting
@@ -321,14 +324,16 @@ class ThroneCompanionsAPITester:
         for i in range(25):  # Send more than the 20 message limit
             test_message = f"Test message {i+1}"
             
-            # Use query parameters
-            endpoint = f"chat?companion_id=sophia&message={test_message}&session_id={session_id}"
-            
             success, response = self.run_test(
-                f"Message {i+1}/25", 
+                f"Message {i+1}/25 (JSON Body)", 
                 "POST", 
-                endpoint, 
+                "chat", 
                 200,
+                data={
+                    "companion_id": "sophia",
+                    "message": test_message,
+                    "session_id": session_id
+                },
                 headers=headers
             )
             
