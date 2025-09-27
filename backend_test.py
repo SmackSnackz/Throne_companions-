@@ -524,15 +524,32 @@ def main():
     tester.test_invalid_companion()
     tester.test_invalid_companion_messages()
     
+    # NEW: Test the new chat endpoint and message tracking functionality
+    print("\n" + "🆕 NEW FUNCTIONALITY TESTS" + "=" * 30)
+    comprehensive_results = tester.test_chat_endpoint_comprehensive()
+    
+    # Print comprehensive test results
+    print("\n📋 New Functionality Test Results:")
+    for test_name, (success, data) in comprehensive_results.items():
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"   {status}: {test_name}")
+    
     # Print final results
     print("\n" + "=" * 50)
     print(f"📊 Final Results: {tester.tests_passed}/{tester.tests_run} tests passed")
     
-    if tester.tests_passed == tester.tests_run:
+    # Check new functionality results
+    new_tests_passed = sum(1 for success, _ in comprehensive_results.values() if success)
+    new_tests_total = len(comprehensive_results)
+    print(f"🆕 New Functionality: {new_tests_passed}/{new_tests_total} tests passed")
+    
+    if tester.tests_passed == tester.tests_run and new_tests_passed == new_tests_total:
         print("🎉 All tests passed!")
         return 0
     else:
-        print(f"⚠️  {tester.tests_run - tester.tests_passed} tests failed")
+        failed_old = tester.tests_run - tester.tests_passed
+        failed_new = new_tests_total - new_tests_passed
+        print(f"⚠️  {failed_old + failed_new} tests failed ({failed_old} old, {failed_new} new)")
         return 1
 
 if __name__ == "__main__":
