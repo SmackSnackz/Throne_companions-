@@ -131,10 +131,10 @@ const ChatPage = () => {
         return;
       }
       
-      // Clear any existing solicitation
+      // Clear any existing solicitation and process normal response
       setSolicitation(null);
       
-      // Add user message to display
+      // Handle normal chat response (data.type === 'answer' or undefined)
       const userMsg = {
         id: `user-${Date.now()}`,
         message: chosenStarter || newMessage.trim(),
@@ -142,10 +142,9 @@ const ChatPage = () => {
         timestamp: new Date().toISOString()
       };
       
-      // Add companion response to display  
       const companionMsg = {
         id: `companion-${Date.now()}`,
-        message: data.reply,
+        message: data.reply || data.text || "I'm having trouble responding right now.",
         is_user: false,
         timestamp: new Date().toISOString()
       };
