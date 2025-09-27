@@ -1,6 +1,7 @@
 import requests
 import sys
 import json
+import time
 from datetime import datetime
 
 class ThroneCompanionsAPITester:
@@ -10,6 +11,8 @@ class ThroneCompanionsAPITester:
         self.tests_run = 0
         self.tests_passed = 0
         self.companion_ids = ["sophia", "aurora", "vanessa"]
+        self.user_token = None
+        self.admin_token = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
         """Run a single API test"""
