@@ -25,6 +25,43 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
+    // Generate or get session ID
+    let sid = localStorage.getItem('tc_session_id');
+    if (!sid) {
+      sid = `s_${Math.random().toString(36).slice(2)}_${Date.now()}`;
+      localStorage.setItem('tc_session_id', sid);
+    }
+    setSessionId(sid);
+    
+    // Check if user is admin (for demo, create admin token)
+    const createDemoAuth = async () => {
+      try {
+        // For demo purposes, check if we have an admin token
+        let token = localStorage.getItem('tc_jwt');
+        if (!token) {
+          // Create a demo user token (or admin for testing)
+          const response = await axios.post(`${API}/auth/create-token`, {
+            email: "demo@thronecompanions.com",
+            role: "user" // Change to "admin" for testing admin features
+          });
+          token = response.data.token;
+          localStorage.setItem('tc_jwt', token);
+        }
+        
+        // Verify token and get user info
+        const verifyResponse = await axios.get(`${API}/auth/verify`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setIsAdmin(verifyResponse.data.is_admin);
+      } catch (err) {
+        console.error("Auth setup failed:", err);
+      }
+    };
+    
+    createDemoAuth();
+  }, []);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
