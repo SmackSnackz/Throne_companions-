@@ -364,11 +364,12 @@ async def chat_endpoint(
     # 6) Get user tier (admin gets best tier, others get their actual tier)  
     user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
     
-    # 7) Handle expansion requests for distress mode responses
-    if request.expansion_requested and unified_prompt_system.check_expansion_request(request.message):
-        # This would be handled by expanded distress mode logic
-        # For now, proceed with normal detailed response
-        pass
+    # 7) Handle expansion requests for both distress mode and general responses
+    is_expansion_request = False
+    if (request.expansion_requested or 
+        unified_prompt_system.check_expansion_request(request.message) or 
+        tone_anchor_system.check_expansion_request(request.message)):
+        is_expansion_request = True
     
     # 8) Prepare message (with solicitation context if provided) - EXISTING LOGIC PRESERVED
     final_message = request.message
