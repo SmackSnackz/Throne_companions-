@@ -223,26 +223,41 @@ const ChatPage = () => {
               </div>
             ))
           )}
+          {sending && <div className="message companion typing">Typing...</div>}
           <div ref={messagesEndRef} />
         </div>
 
-        <form onSubmit={sendMessage} className="message-input-container">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder={`Message ${companion.name}...`}
-            className="message-input"
-            disabled={sending}
+        {/* Solicitation Panel */}
+        {solicitation && (
+          <SolicitationPanel
+            questions={solicitation.questions}
+            starterPrompts={solicitation.starter_prompts}
+            tag={solicitation.tag}
+            companionName={companion.name}
+            onSubmit={handleSolicitationSubmit}
           />
-          <button 
-            type="submit" 
-            className="send-button"
-            disabled={sending || !newMessage.trim()}
-          >
-            {sending ? "Sending..." : "Send"}
-          </button>
-        </form>
+        )}
+
+        {/* Regular Message Input */}
+        {!solicitation && (
+          <form onSubmit={sendMessage} className="message-input-container">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder={`Message ${companion.name}...`}
+              className="message-input"
+              disabled={sending}
+            />
+            <button 
+              type="submit" 
+              className="send-button"
+              disabled={sending || !newMessage.trim()}
+            >
+              {sending ? "Sending..." : "Send"}
+            </button>
+          </form>
+        )}
       </div>
 
       {showUpgrade && (
