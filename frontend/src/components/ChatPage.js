@@ -91,7 +91,7 @@ const ChatPage = () => {
     }
   }, [id]);
 
-  const sendMessage = async (e, solicitationAnswers = null, chosenStarter = null) => {
+  const sendMessage = async (e, solicitationAnswers = null, chosenStarter = null, isExpansion = false) => {
     if (e) e.preventDefault();
     
     if ((!newMessage.trim() && !chosenStarter) || sending || !sessionId) return;
