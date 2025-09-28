@@ -40,6 +40,18 @@ const ChatPage = () => {
     }
     setSessionId(sid);
     
+    // Load saved persona preference
+    const savedPersona = localStorage.getItem('tc_selected_persona');
+    if (savedPersona) {
+      setSelectedPersona(savedPersona);
+    }
+    
+    // Load saved affection dial setting
+    const savedAffection = localStorage.getItem('tc_affection_dial');
+    if (savedAffection) {
+      setAffectionDial(parseInt(savedAffection));
+    }
+    
     // Check if user has an existing admin token, otherwise create user token
     const createDemoAuth = async () => {
       try {
