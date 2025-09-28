@@ -439,7 +439,7 @@ async def chat_endpoint(
         tone_anchor_system.check_expansion_request(request.message)):
         is_expansion_request = True
     
-    # 8) Prepare message (with solicitation context if provided) - EXISTING LOGIC PRESERVED
+    # 9) Prepare message (with solicitation context if provided) - EXISTING LOGIC PRESERVED
     final_message = request.message
     if request.solicitation_answers or request.chosen_starter:
         # Build preface based on user clarifications
