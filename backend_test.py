@@ -827,32 +827,50 @@ def main():
     tester.test_invalid_companion()
     tester.test_invalid_companion_messages()
     
-    # NEW: Test the new chat endpoint and message tracking functionality
-    print("\n" + "🆕 NEW FUNCTIONALITY TESTS" + "=" * 30)
+    # EXISTING: Test the chat endpoint and message tracking functionality
+    print("\n" + "🆕 EXISTING FUNCTIONALITY TESTS" + "=" * 25)
     comprehensive_results = tester.test_chat_endpoint_comprehensive()
     
+    # NEW: Test Memory System and Mixpanel Event Tracking
+    print("\n" + "🧠 MEMORY SYSTEM & MIXPANEL TESTS" + "=" * 25)
+    memory_and_events_results = tester.test_memory_and_events_comprehensive()
+    
     # Print comprehensive test results
-    print("\n📋 New Functionality Test Results:")
+    print("\n📋 Existing Functionality Test Results:")
     for test_name, (success, data) in comprehensive_results.items():
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"   {status}: {test_name}")
+    
+    print("\n📋 Memory System & Mixpanel Test Results:")
+    for test_name, (success, data) in memory_and_events_results.items():
         status = "✅ PASSED" if success else "❌ FAILED"
         print(f"   {status}: {test_name}")
     
     # Print final results
     print("\n" + "=" * 50)
-    print(f"📊 Final Results: {tester.tests_passed}/{tester.tests_run} tests passed")
+    print(f"📊 Basic API Tests: {tester.tests_passed}/{tester.tests_run} tests passed")
+    
+    # Check existing functionality results
+    existing_tests_passed = sum(1 for success, _ in comprehensive_results.values() if success)
+    existing_tests_total = len(comprehensive_results)
+    print(f"🆕 Existing Functionality: {existing_tests_passed}/{existing_tests_total} tests passed")
     
     # Check new functionality results
-    new_tests_passed = sum(1 for success, _ in comprehensive_results.values() if success)
-    new_tests_total = len(comprehensive_results)
-    print(f"🆕 New Functionality: {new_tests_passed}/{new_tests_total} tests passed")
+    new_tests_passed = sum(1 for success, _ in memory_and_events_results.values() if success)
+    new_tests_total = len(memory_and_events_results)
+    print(f"🧠 Memory & Events: {new_tests_passed}/{new_tests_total} tests passed")
     
-    if tester.tests_passed == tester.tests_run and new_tests_passed == new_tests_total:
+    total_passed = tester.tests_passed + existing_tests_passed + new_tests_passed
+    total_tests = tester.tests_run + existing_tests_total + new_tests_total
+    
+    if total_passed == total_tests:
         print("🎉 All tests passed!")
         return 0
     else:
-        failed_old = tester.tests_run - tester.tests_passed
+        failed_basic = tester.tests_run - tester.tests_passed
+        failed_existing = existing_tests_total - existing_tests_passed
         failed_new = new_tests_total - new_tests_passed
-        print(f"⚠️  {failed_old + failed_new} tests failed ({failed_old} old, {failed_new} new)")
+        print(f"⚠️  {total_tests - total_passed} tests failed ({failed_basic} basic, {failed_existing} existing, {failed_new} new)")
         return 1
 
 if __name__ == "__main__":
