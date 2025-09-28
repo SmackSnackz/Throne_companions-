@@ -721,6 +721,78 @@ async def verify_token(authorization: Optional[str] = Header(None)):
         "exp": payload.get("exp")
     }
 
+# EMAIL AUTHENTICATION ENDPOINTS FOR ADMIN ACCESS
+@api_router.post("/auth/request-admin-code")
+async def request_admin_access_code(request_data: dict):
+    """Request admin access code via email"""
+    try:
+        email = request_data.get("email")
+        if not email:
+            raise HTTPException(status_code=400, detail="Email required")
+        
+        # Clean up expired codes first
+        email_auth_service.cleanup_expired_codes()
+        
+        # Send access code
+        result = await email_auth_service.send_access_code(email)
+        
+        if result["success"]:
+            return {
+                "success": True,
+                "message": result["message"],
+                "code": result.get("code"),  # Only shown in development
+                "email": email
+            }
+        else:
+            raise HTTPException(status_code=403, detail=result["message"])
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Admin code request failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to send access code")
+
+@api_router.post("/auth/verify-admin-code")
+async def verify_admin_access_code(verification_data: dict):
+    """Verify admin access code and return JWT token"""
+    try:
+        email = verification_data.get("email")
+        code = verification_data.get("code")
+        
+        if not email or not code:
+            raise HTTPException(status_code=400, detail="Email and code required")
+        
+        # Verify code
+        result = email_auth_service.verify_access_code(email, code)
+        
+        if result["success"]:
+            # Generate admin JWT token
+            payload = {
+                "email": email,
+                "role": "admin",
+                "exp": time.time() + (24 * 3600),  # 24 hours
+                "iat": time.time()
+            }
+            
+            token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+            
+            return {
+                "success": True,
+                "message": "Admin access granted",
+                "token": token,
+                "email": email,
+                "role": "admin",
+                "expires_in": 24 * 3600
+            }
+        else:
+            raise HTTPException(status_code=401, detail=result["message"])
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Admin code verification failed: {e}")
+        raise HTTPException(status_code=500, detail="Code verification failed")
+
 @api_router.post("/session/complete")
 async def complete_session(
     session_data: dict,
