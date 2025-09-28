@@ -161,13 +161,6 @@ const TierSelection = ({ onTierSelected, currentTier = "novice" }) => {
             <div className="tier-col">✅</div>
           </div>
           
-          <div className="comparison-row">
-            <div className="feature-name">Visual Content</div>
-            <div className="tier-col">❌</div>
-            <div className="tier-col">✅</div>
-            <div className="tier-col">✅</div>
-            <div className="tier-col">✅</div>
-          </div>
           
           <div className="comparison-row">
             <div className="feature-name">Finance Tools</div>
