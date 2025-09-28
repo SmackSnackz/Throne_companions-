@@ -457,15 +457,15 @@ async def chat_endpoint(
     last_ai_response = ""
     if is_expansion_request:
         try:
-            # Get the most recent companion response from this session
-            last_companion_msg = await db.chat_history.find({
-                "user_id": user_id,
-                "session_id": session_id,
-                "direction": "companion"
-            }).sort("timestamp", -1).limit(1).to_list(length=1)
+            # Get the most recent companion response from chat_messages (stored immediately)
+            last_companion_msg = await db.chat_messages.find({
+                "companion_id": request.companion_id,
+                "is_user": False
+            }).sort("_id", -1).limit(1).to_list(length=1)
             
             if last_companion_msg:
                 last_ai_response = last_companion_msg[0].get("message", "")
+                logging.info(f"Found last AI response for expansion: {last_ai_response[:100]}...")
         except Exception as e:
             logging.warning(f"Failed to get last AI response: {e}")
             last_ai_response = ""
