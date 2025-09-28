@@ -497,6 +497,33 @@ Current session context: This is an active conversation. Stay present and emotio
     except Exception as e:
         logging.error(f"Database save failed: {e}")
     
+    # 10.1) MEMORY SYSTEM - Store chat history
+    try:
+        # Store user message in memory system
+        await memory_system.store_chat_message(
+            user_id=user_id,
+            session_id=session_id,
+            message=request.message,
+            direction="user",
+            role=request.user_mode or "Friend",
+            affection_dial=request.affection_dial or 2
+        )
+        
+        # Store companion response in memory system
+        await memory_system.store_chat_message(
+            user_id=user_id,
+            session_id=session_id,
+            message=reply_text,
+            direction="companion",
+            role=request.user_mode or "Friend",
+            affection_dial=request.affection_dial or 2
+        )
+        
+        logging.info(f"Stored memory for session {session_id}")
+        
+    except Exception as e:
+        logging.error(f"Memory storage failed: {e}")
+    
     # 11) GUARANTEED RESPONSE - Always return a proper chat response
     return {
         "type": "answer",
