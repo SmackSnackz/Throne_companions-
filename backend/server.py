@@ -510,23 +510,35 @@ Current session context: This is an active conversation. Stay present and emotio
             additional_context=additional_context
         )
         
-        # FOCUSED EXPANSION SYSTEM - PATCHED UX for "Go Deeper"
+        # SIMPLE "GO DEEPER" EXPANSION - Direct approach
         if is_expansion_request:
-            # Build focused expansion prompt instead of abstract expansion
-            last_topic = expansion_context.get("last_topic")
-            focused_expansion_prompt = focused_expansion_system.build_focused_expansion_prompt(
-                persona=request.companion_id,
-                last_topic=last_topic,
-                user_tier=user_tier,
-                original_message=request.message
-            )
+            if last_ai_response:
+                expansion_prompt = f"""
+The user requested expansion (go deeper/tell me more) on your previous response.
+
+YOUR PREVIOUS RESPONSE WAS:
+"{last_ai_response[:500]}..."
+
+INSTRUCTIONS:
+1. Take the specific points, ideas, or suggestions from your previous response above
+2. Expand on those EXACT points with more detail, examples, or steps
+3. Do NOT introduce new topics or go off on tangents
+4. Provide practical, actionable details about what you already mentioned
+5. If you mentioned a list, expand each item with more specifics
+6. If you gave advice, provide more detailed steps or examples
+
+STAY FOCUSED on expanding your previous response - nothing else.
+"""
+            else:
+                expansion_prompt = f"""
+The user requested expansion, but I cannot find your previous response to expand on.
+Ask the user: "What specific aspect would you like me to expand on?" and offer 2-3 concrete options based on the current conversation.
+"""
             
-            # Integrate focused expansion with existing system prompt
+            # Add expansion guidance to system prompt
             system_prompt = f"""{system_prompt}
 
-{focused_expansion_prompt}
-
-CRITICAL: This is a "Go Deeper" request. Stay focused on the specific topic and provide practical, step-by-step expansion. Do not interpret metaphorically or spiritually unless explicitly asked."""
+{expansion_prompt}"""
         else:
             # Default grounded response using existing tone anchor system
             system_prompt = tone_anchor_system.build_grounded_system_prompt(
