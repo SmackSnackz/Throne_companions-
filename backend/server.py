@@ -332,6 +332,17 @@ async def chat_endpoint(
     session_id = request.session_id or f"session:{email or 'anon'}:{int(time.time())}"
     session_key = generate_session_key(session_id)
     
+    # 3.1) MEMORY SYSTEM - Get memory summaries for injection
+    user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
+    memory_injection = ""
+    try:
+        memory_injection = await memory_system.get_memory_summaries_for_injection(user_id, user_tier)
+        if memory_injection:
+            logging.info(f"Memory injection for user {user_id}: {memory_injection[:100]}...")
+    except Exception as e:
+        logging.error(f"Memory injection failed: {e}")
+        memory_injection = ""
+    
     # 4) UNIFIED PROMPT SYSTEM - Master logic flow (PRESERVES all existing functionality)
     if not request.solicitation_answers and not request.chosen_starter:
         try:
