@@ -6,13 +6,20 @@ Sends access codes via email for secure admin login
 import os
 import random
 import string
-import smtplib
 import logging
 from datetime import datetime, timezone, timedelta
-from email.mime.text import MimeText
-from email.mime.multipart import MimeMultipart
 from typing import Optional, Dict
 import asyncio
+
+# Email imports with error handling
+try:
+    import smtplib
+    from email.mime.text import MimeText
+    from email.mime.multipart import MimeMultipart
+    EMAIL_LIBS_AVAILABLE = True
+except ImportError as e:
+    EMAIL_LIBS_AVAILABLE = False
+    logging.warning(f"Email libraries not available: {e}")
 
 try:
     from sendgrid import SendGridAPIClient
