@@ -28,6 +28,21 @@ const OnboardingTierSelection = ({ onTierSelected, selectedTier = "novice", isOn
   const handleTierSelect = (tierKey) => {
     setCurrentTier(tierKey);
     
+    // Get tier data for tracking
+    const selectedTier = tiers[tierKey];
+    
+    // Track tier engagement
+    tracker.trackTierEngagement(selectedTier?.display_name || tierKey, 'selected', {
+      tier_price: selectedTier?.price || 0,
+      step: 'onboarding'
+    });
+    
+    // Track onboarding step
+    tracker.trackOnboardingStep('tier_selection', {
+      selected_tier: selectedTier?.display_name || tierKey,
+      tier_price: selectedTier?.price || 0
+    });
+    
     // For free tier, proceed immediately
     if (tierKey === "novice") {
       onTierSelected(tierKey);
