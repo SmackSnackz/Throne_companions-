@@ -403,7 +403,7 @@ async def chat_endpoint(
             logging.warning(f"Unified prompt system failed: {e}, proceeding with normal response")
             # Continue to normal response if system fails
     
-    # 5) Check message cap for non-admin users
+    # 6) Check message cap for non-admin users
     if not is_admin:
         current_count = get_count(session_key)
         if current_count >= FREE_LIMIT:
