@@ -46,6 +46,10 @@ class FocusedExpansionSystem:
         
         # Enhanced patterns to catch more business/topic scenarios
         topic_patterns = [
+            # Money/financial topics
+            r'(?:extra|more|additional|passive|side)\s+(money|income|cash)\s*([^.?!\n]*)',
+            r'([^.?!\n]*money[^.?!\n]*ideas[^.?!\n]*)',
+            r'([^.?!\n]*ideas[^.?!\n]*money[^.?!\n]*)',
             # "I want to start X" patterns
             r'(?:want to|going to|plan to|thinking about|interested in)\s+(?:start|starting|create|creating|build|building)\s+(?:a\s+)?([^.?!\n]+)',
             # "X business/agency/service" patterns  
@@ -56,6 +60,8 @@ class FocusedExpansionSystem:
             r'starting\s+(?:a\s+)?([^.?!\n]+)',
             # General topic extraction
             r'about\s+([^.?!\n]+)',
+            # Direct topic mentions
+            r'([a-zA-Z\s]*ideas[a-zA-Z\s]*)',
         ]
         
         for line in reversed(lines):
