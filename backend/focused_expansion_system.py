@@ -141,24 +141,29 @@ DO NOT provide abstract philosophical content. Stay practical and focused.
             expansion_instruction = f"""
 The user requested expansion on: "{last_topic}"
 
-FOCUSED EXPANSION INSTRUCTIONS:
-1. IDENTIFY: Clearly state what you're expanding on: "{last_topic}"
-2. STRUCTURE: Provide practical, step-by-step details about "{last_topic}"
-3. STAY ON-TOPIC: Every point must relate directly to "{last_topic}"
-4. BE CONCRETE: Give actionable steps, not abstract concepts
-5. PERSONALITY: Maintain your {persona} voice while staying focused
+STRICT TOPIC FOCUS - DO NOT DEVIATE:
+You MUST expand ONLY on "{last_topic}" - nothing else.
 
-AVOID:
-- Abstract philosophical interpretations
-- Spiritual or emotional tangents
-- Unrelated metaphors or analogies
-- General life advice not connected to "{last_topic}"
+MANDATORY REQUIREMENTS:
+1. START by stating: "Let me expand on {last_topic}..."
+2. Every single point must be about "{last_topic}" specifically
+3. Provide 3-5 concrete, actionable steps about "{last_topic}"
+4. Use bullet points or numbered lists
+5. Give specific examples related to "{last_topic}"
 
-FOCUS ON:
-- Practical next steps for "{last_topic}"
-- Specific techniques for "{last_topic}"
-- Real-world examples of "{last_topic}"
-- Actionable advice about "{last_topic}"
+ABSOLUTELY FORBIDDEN:
+- Talking about anything other than "{last_topic}"
+- General life advice unrelated to "{last_topic}"
+- Abstract concepts not connected to "{last_topic}"
+- Emotional or spiritual interpretations unless "{last_topic}" is specifically about emotions/spirituality
+- Changing the subject or introducing new topics
+
+IF "{last_topic}" contains "money" or "income" or "ideas":
+- Focus exclusively on practical ways to achieve that specific financial goal
+- Give concrete steps, methods, and strategies
+- Mention specific dollar amounts, timeframes, or measurable outcomes when possible
+
+REMEMBER: The user wants MORE DETAIL about "{last_topic}" - stay laser-focused on that exact topic.
 """
         
         return expansion_instruction
