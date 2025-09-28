@@ -100,7 +100,7 @@ class EmailAuthService:
     
     async def send_access_code_smtp(self, to_email: str, access_code: str) -> bool:
         """Send access code via SMTP"""
-        if not self.smtp_username or not self.smtp_password:
+        if not EMAIL_LIBS_AVAILABLE or not self.smtp_username or not self.smtp_password:
             return False
         
         try:
