@@ -65,35 +65,74 @@ const AdminLogin = ({ onLoginSuccess }) => {
         <h2>🔐 Admin Access</h2>
         <p>Secure admin view for tier behavior testing</p>
         
-        <form onSubmit={handleLogin}>
-          <div className="form-group">
-            <label>Admin Email:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@thronecompanions.com"
-              required
-            />
-          </div>
+        {!codeSent ? (
+          <form onSubmit={handleRequestCode}>
+            <div className="form-group">
+              <label>Admin Email:</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@thronecompanions.com"
+                required
+              />
+            </div>
 
-          <div className="form-group">
-            <label>Access Code:</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Admin access code"
-              required
-            />
-          </div>
+            {error && <div className="error-message">{error}</div>}
 
-          {error && <div className="error-message">{error}</div>}
+            <button type="submit" disabled={loading} className="admin-login-btn">
+              {loading ? 'Sending Code...' : 'Send Access Code'}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleVerifyCode}>
+            <div className="form-group">
+              <label>Email:</label>
+              <input
+                type="email"
+                value={email}
+                disabled
+                className="disabled-input"
+              />
+            </div>
 
-          <button type="submit" disabled={loading} className="admin-login-btn">
-            {loading ? 'Verifying...' : 'Access Admin Panel'}
-          </button>
-        </form>
+            <div className="form-group">
+              <label>Access Code:</label>
+              <input
+                type="text"
+                value={accessCode}
+                onChange={(e) => setAccessCode(e.target.value)}
+                placeholder="Enter 6-digit code"
+                maxLength="6"
+                required
+              />
+            </div>
+
+            {codeResult && codeResult.code && (
+              <div className="code-display">
+                <strong>Demo Code: {codeResult.code}</strong>
+                <p style={{fontSize: '0.8rem', color: '#888'}}>
+                  (Code displayed for staging/demo purposes)
+                </p>
+              </div>
+            )}
+
+            {error && <div className="error-message">{error}</div>}
+
+            <div className="button-group">
+              <button type="submit" disabled={loading} className="admin-login-btn">
+                {loading ? 'Verifying...' : 'Verify Code'}
+              </button>
+              <button 
+                type="button" 
+                onClick={() => {setCodeSent(false); setAccessCode(''); setError(''); setCodeResult(null);}}
+                className="back-btn"
+              >
+                Back
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
