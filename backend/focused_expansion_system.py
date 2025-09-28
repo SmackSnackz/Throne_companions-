@@ -85,21 +85,32 @@ class FocusedExpansionSystem:
                             self.logger.info(f"Extracted topic: {topic}")
                             return topic
         
-        # Fallback: look for key business terms
-        business_keywords = ['marketing', 'business', 'agency', 'service', 'company', 'startup', 'venture', 'consulting']
+        # Fallback: look for key business and money terms
+        business_keywords = ['money', 'income', 'cash', 'ideas', 'marketing', 'business', 'agency', 'service', 'company', 'startup', 'venture', 'consulting']
         for line in reversed(lines):
             if 'User:' in line:
                 user_text = line.split('User:')[-1].strip().lower()
                 for keyword in business_keywords:
                     if keyword in user_text:
-                        # Try to extract context around the keyword
-                        words = user_text.split()
-                        for i, word in enumerate(words):
-                            if keyword in word:
-                                start = max(0, i-2)
-                                end = min(len(words), i+3)
-                                context = ' '.join(words[start:end])
-                                return context.strip()
+                        # For money-related topics, extract the full phrase
+                        if keyword in ['money', 'income', 'cash', 'ideas']:
+                            # Extract broader context for money topics
+                            words = user_text.split()
+                            for i, word in enumerate(words):
+                                if keyword in word:
+                                    start = max(0, i-3)
+                                    end = min(len(words), i+4)
+                                    context = ' '.join(words[start:end])
+                                    return context.strip()
+                        else:
+                            # Try to extract context around the keyword
+                            words = user_text.split()
+                            for i, word in enumerate(words):
+                                if keyword in word:
+                                    start = max(0, i-2)
+                                    end = min(len(words), i+3)
+                                    context = ' '.join(words[start:end])
+                                    return context.strip()
         
         self.logger.info("No specific topic extracted")
         return None
