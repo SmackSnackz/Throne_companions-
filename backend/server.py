@@ -432,7 +432,7 @@ async def chat_endpoint(
     # 7) Get user tier (admin gets best tier, others get their actual tier)  
     user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
     
-    # 7) Handle expansion requests for both distress mode and general responses
+    # 8) Handle expansion requests for both distress mode and general responses
     is_expansion_request = False
     if (request.expansion_requested or 
         unified_prompt_system.check_expansion_request(request.message) or 
