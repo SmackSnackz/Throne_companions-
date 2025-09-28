@@ -557,6 +557,41 @@ async def verify_token(authorization: Optional[str] = Header(None)):
         "exp": payload.get("exp")
     }
 
+@api_router.post("/session/complete")
+async def complete_session(
+    session_data: dict,
+    authorization: Optional[str] = Header(None)
+):
+    """Complete a session and generate memory summary"""
+    try:
+        # Identify user from JWT
+        payload = decode_jwt(authorization)
+        user_id = payload.get("email") or "demo_user"
+        session_id = session_data.get("session_id")
+        
+        if not session_id:
+            raise HTTPException(status_code=400, detail="Session ID required")
+        
+        # Generate and store memory summary
+        summary = await memory_system.complete_session_and_summarize(user_id, session_id)
+        
+        if summary:
+            return {
+                "status": "completed",
+                "session_id": session_id,
+                "summary": summary
+            }
+        else:
+            return {
+                "status": "completed",
+                "session_id": session_id,
+                "summary": "No summary generated"
+            }
+            
+    except Exception as e:
+        logging.error(f"Session completion failed: {e}")
+        raise HTTPException(status_code=500, detail="Session completion failed")
+
 async def create_chat_message(companion_id: str, message_data: ChatMessageCreate):
     # Verify companion exists
     companions_data = [
