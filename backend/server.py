@@ -991,6 +991,87 @@ async def deactivate_tier_override(
         logging.error(f"Override deactivation failed: {e}")
         raise HTTPException(status_code=500, detail="Deactivation failed")
 
+# ADMIN ERROR LOGGING ENDPOINTS
+@api_router.get("/admin/error-logs")
+async def get_error_logs(
+    limit: int = 100,
+    error_type: Optional[str] = None,
+    authorization: Optional[str] = Header(None)
+):
+    """Get error logs for admin review"""
+    try:
+        # Verify admin access
+        payload = decode_jwt(authorization)
+        if not payload or not is_admin_user(payload):
+            raise HTTPException(status_code=403, detail="Admin access required")
+        
+        logs = await error_logger.get_error_logs(limit=limit, error_type=error_type)
+        stats = await error_logger.get_error_stats()
+        
+        return {
+            "logs": logs,
+            "stats": stats,
+            "total_logs": len(logs)
+        }
+        
+    except Exception as e:
+        logging.error(f"Failed to get error logs: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve error logs")
+
+@api_router.delete("/admin/error-logs")
+async def clear_error_logs(authorization: Optional[str] = Header(None)):
+    """Clear all error logs"""
+    try:
+        # Verify admin access
+        payload = decode_jwt(authorization)
+        if not payload or not is_admin_user(payload):
+            raise HTTPException(status_code=403, detail="Admin access required")
+        
+        cleared_count = await error_logger.clear_error_logs()
+        
+        return {
+            "status": "cleared",
+            "cleared_count": cleared_count
+        }
+        
+    except Exception as e:
+        logging.error(f"Failed to clear error logs: {e}")
+        raise HTTPException(status_code=500, detail="Failed to clear error logs")
+
+@api_router.post("/admin/test-tier-behavior")
+async def test_tier_behavior(
+    test_data: dict,
+    authorization: Optional[str] = Header(None)
+):
+    """Test tier behavior for admin review"""
+    try:
+        # Verify admin access
+        payload = decode_jwt(authorization)
+        if not payload or not is_admin_user(payload):
+            raise HTTPException(status_code=403, detail="Admin access required")
+        
+        tier = test_data.get("tier", "novice")
+        test_message = test_data.get("test_message", "Hello")
+        
+        # Simulate tier behavior testing
+        effective_config = temp_admin_override.get_effective_tier_config(
+            payload.get("email"), 
+            f"admin_test_{tier}", 
+            tier
+        )
+        
+        return {
+            "tier": tier,
+            "response": f"Simulated {tier} tier response to: {test_message}",
+            "memory_summaries": effective_config.get("memory_retention_override", 0),
+            "features_used": effective_config.get("feature_unlocks", {}),
+            "config": effective_config
+        }
+        
+    except Exception as e:
+        logging.error(f"Tier behavior test failed: {e}")
+        raise HTTPException(status_code=500, detail="Tier behavior test failed")
+
 async def create_chat_message(companion_id: str, message_data: ChatMessageCreate):
     # Verify companion exists
     companions_data = [
