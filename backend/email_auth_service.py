@@ -50,7 +50,8 @@ class EmailAuthService:
             'admin@thronecompanions.com',
             'roy@thronecompanions.com',
             'roy.carnell.johnson@gmail.com',
-            'roycarnelljohnson@gmail.com'
+            'roycarnelljohnson@gmail.com',
+            'Rjohnson801915@gmail.com'
         ]
     
     def generate_access_code(self) -> str:
