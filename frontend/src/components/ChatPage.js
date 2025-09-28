@@ -87,6 +87,25 @@ const ChatPage = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Investigation panel access (Ctrl+Shift+I)
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.shiftKey && event.key === 'I') {
+        event.preventDefault();
+        if (userEmail && (
+          userEmail.toLowerCase().includes('roy') || 
+          userEmail.toLowerCase().includes('carnell') ||
+          userEmail.toLowerCase().includes('johnson')
+        )) {
+          setShowInvestigationPanel(true);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [userEmail]);
+
   useEffect(() => {
     const fetchCompanionAndMessages = async () => {
       try {
