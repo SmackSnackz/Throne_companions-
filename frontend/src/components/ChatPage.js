@@ -378,6 +378,14 @@ const ChatPage = () => {
           </div>
         </div>
       )}
+
+      {/* Investigation Panel - Roy Carnell Johnson Access */}
+      <InvestigationPanel
+        userEmail={userEmail}
+        sessionId={sessionId}
+        isVisible={showInvestigationPanel}
+        onClose={() => setShowInvestigationPanel(false)}
+      />
     </div>
   );
 };
