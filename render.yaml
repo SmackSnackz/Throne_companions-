@@ -1,0 +1,39 @@
+# Render.com deployment configuration
+services:
+  - type: web
+    name: throne-companions-staging
+    env: node
+    plan: starter
+    repo: https://github.com/your-username/throne-companions.git
+    buildCommand: |
+      cd frontend && yarn install && yarn build
+      cd ../backend && pip install -r requirements.txt
+    startCommand: cd backend && python server.py
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: REACT_APP_BACKEND_URL
+        value: https://throne-companions-staging.onrender.com
+      - key: MONGO_URL
+        value: mongodb://localhost:27017/throne_companions
+      - key: DB_NAME
+        value: throne_companions
+      - key: EMERGENT_LLM_KEY
+        fromService:
+          type: pserv
+          name: your-emergent-key-service
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAILS
+        value: admin@thronecompanions.com,roy@thronecompanions.com,Rjohnson801915@gmail.com
+    
+  - type: pserv
+    name: throne-companions-mongo
+    env: docker
+    plan: starter
+    dockerfilePath: ./mongo.Dockerfile
+    disk:
+      name: mongo-data
+      mountPath: /data/db
+      sizeGB: 1
