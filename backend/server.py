@@ -542,7 +542,7 @@ Current session context: This is an active conversation. Stay present and emotio
     except Exception as e:
         logging.error(f"Database save failed: {e}")
     
-    # 10.1) MEMORY SYSTEM - Store chat history
+    # 12.1) MEMORY SYSTEM - Store chat history
     try:
         # Store user message in memory system
         await memory_system.store_chat_message(
