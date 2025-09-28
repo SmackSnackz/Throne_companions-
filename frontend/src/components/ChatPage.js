@@ -5,6 +5,7 @@ import SolicitationPanel from "./SolicitationPanel";
 import DistressResponse from "./DistressResponse";
 import PersonaSelector from "./PersonaSelector";
 import InvestigationPanel from "./InvestigationPanel";
+import tracker from "../utils/mixpanel";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
