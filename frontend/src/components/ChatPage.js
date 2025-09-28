@@ -279,6 +279,20 @@ const ChatPage = () => {
               {usedCount} of {FREE_LIMIT} free messages used
             </p>
           )}
+          {/* Investigation Panel Access for Roy */}
+          {userEmail && (
+            userEmail.toLowerCase().includes('roy') || 
+            userEmail.toLowerCase().includes('carnell') ||
+            userEmail.toLowerCase().includes('johnson')
+          ) && (
+            <button 
+              onClick={() => setShowInvestigationPanel(true)}
+              className="investigation-access-btn"
+              title="Ctrl+Shift+I"
+            >
+              🔒 Investigation
+            </button>
+          )}
         </div>
       </div>
 
