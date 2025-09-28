@@ -347,7 +347,36 @@ async def chat_endpoint(
         logging.error(f"Memory injection failed: {e}")
         memory_injection = ""
     
-    # 4) UNIFIED PROMPT SYSTEM - Master logic flow (PRESERVES all existing functionality)
+    # 4) SESSION START SOLICITATION CHECK - Check if this is a new session without previous messages
+    try:
+        # Check if this is the first message in the session
+        session_message_count = await memory_system.get_session_message_count(user_id, session_id)
+        is_new_session = session_message_count == 0
+        
+        # If new session and no solicitation answers provided, trigger session start solicitation
+        if is_new_session and not request.solicitation_answers and not request.chosen_starter:
+            session_start_response = {
+                "type": "solicitation",
+                "tag": "Session Start - How should I support you?",
+                "companion_id": request.companion_id,
+                "questions": [
+                    {"id": "support_style", "text": "How would you like me to support you today?", "options": ["Soft & gentle", "Honest & direct", "Funny & light", "Wise & firm"]},
+                    {"id": "conversation_goal", "text": "What kind of conversation are you looking for?", "options": ["Deep emotional support", "Light conversation", "Real advice", "Ask questions & explore"]}
+                ],
+                "starter_prompts": [
+                    "I need emotional support right now",
+                    "Give me some real advice about life", 
+                    "Let's have something fun and light",
+                    "I want to ask you some questions"
+                ],
+                "tier": user_tier,
+                "session_id": session_id
+            }
+            return session_start_response
+    except Exception as e:
+        logging.error(f"Session start solicitation failed: {e}")
+    
+    # 5) UNIFIED PROMPT SYSTEM - Master logic flow (PRESERVES all existing functionality)
     if not request.solicitation_answers and not request.chosen_starter:
         try:
             # Get user tier for analysis
