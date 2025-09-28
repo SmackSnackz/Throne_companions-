@@ -422,6 +422,9 @@ Memory: {'Unlimited conversation history' if is_admin else 'Limited to current s
 Current session context: This is an active conversation. Stay present and emotionally connected.
 """
         
+        # Inject memory summaries if available
+        effective_memory_summary = memory_injection or request.memory_summary or ""
+        
         # MASTER PROMPT INSERTION (Following Developer Note exactly)
         system_prompt = master_prompt_system.build_complete_system_prompt(
             companion_id=request.companion_id,
