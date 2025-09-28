@@ -528,6 +528,39 @@ Current session context: This is an active conversation. Stay present and emotio
     except Exception as e:
         logging.error(f"Memory storage failed: {e}")
     
+    # 11.1) MIXPANEL EVENT TRACKING - Track message sent
+    try:
+        await mixpanel_tracker.track_message_sent(
+            user_id=user_id,
+            session_id=session_id,
+            companion_id=request.companion_id,
+            message_length=len(request.message),
+            user_tier=user_tier
+        )
+        
+        # Track session started if this is the first message in session
+        message_count = await memory_system.get_session_message_count(user_id, session_id)
+        if message_count <= 2:  # User message + companion response = 2
+            await mixpanel_tracker.track_session_started(
+                user_id=user_id,
+                session_id=session_id,
+                companion_id=request.companion_id,
+                user_tier=user_tier
+            )
+            
+        # Track memory system usage if summaries were injected
+        if memory_injection:
+            summaries_count = len(memory_injection.split(" | ")) if " | " in memory_injection else 1
+            await mixpanel_tracker.track_memory_system_usage(
+                user_id=user_id,
+                session_id=session_id,
+                memory_summaries_count=summaries_count,
+                user_tier=user_tier
+            )
+            
+    except Exception as e:
+        logging.error(f"Mixpanel tracking failed: {e}")
+    
     # 11) GUARANTEED RESPONSE - Always return a proper chat response
     return {
         "type": "answer",
