@@ -23,6 +23,8 @@ const ChatPage = () => {
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [solicitation, setSolicitation] = useState(null);
   const [distressResponse, setDistressResponse] = useState(null);
+  const [selectedPersona, setSelectedPersona] = useState('Confidant');
+  const [affectionDial, setAffectionDial] = useState(2);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
