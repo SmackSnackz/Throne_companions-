@@ -2041,7 +2041,7 @@ body {
   line-height: 1.5;
 }
 
-.question-input {
+.question-input, .question-select {
   width: 100%;
   background: rgba(26, 32, 44, 0.8);
   border: 1px solid rgba(255, 215, 0, 0.3);
@@ -2050,6 +2050,16 @@ body {
   color: var(--throne-silver);
   font-size: 0.875rem;
   transition: all 0.3s ease;
+}
+
+.question-select {
+  cursor: pointer;
+}
+
+.question-select option {
+  background: var(--throne-deep-blue);
+  color: white;
+  padding: 0.5rem;
 }
 
 .question-input:focus {
