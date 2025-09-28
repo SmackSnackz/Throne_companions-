@@ -33,18 +33,42 @@ const SolicitationPanel = ({ questions, starterPrompts, tag, companionName, onSu
       )}
 
       <div className="solicitation-questions">
-        {questions.map((question, index) => (
-          <div key={index} className="question-group">
-            <div className="question-text">{question}</div>
-            <input
-              type="text"
-              className="question-input"
-              placeholder="Your answer..."
-              value={answers[index] || ""}
-              onChange={(e) => handleAnswerChange(index, e.target.value)}
-            />
-          </div>
-        ))}
+        {questions.map((question, index) => {
+          // Handle both string questions and object questions with options
+          const questionText = typeof question === 'string' ? question : question.text;
+          const questionOptions = typeof question === 'object' ? question.options : null;
+          
+          return (
+            <div key={index} className="question-group">
+              <div className="question-text">{questionText}</div>
+              
+              {questionOptions ? (
+                // Render dropdown for questions with options
+                <select
+                  className="question-select"
+                  value={answers[index] || ""}
+                  onChange={(e) => handleAnswerChange(index, e.target.value)}
+                >
+                  <option value="">Select an option...</option>
+                  {questionOptions.map((option, optionIndex) => (
+                    <option key={optionIndex} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                // Render text input for open-ended questions
+                <input
+                  type="text"
+                  className="question-input"
+                  placeholder="Your answer..."
+                  value={answers[index] || ""}
+                  onChange={(e) => handleAnswerChange(index, e.target.value)}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <div className="starter-prompts">
