@@ -781,6 +781,132 @@ async def get_event_stats():
         logging.error(f"Failed to get event stats: {e}")
         raise HTTPException(status_code=500, detail="Failed to get stats")
 
+# TEMPORARY ADMIN OVERRIDE ENDPOINTS - SESSION BASED ONLY
+@api_router.post("/admin/activate_sovereign_investigation")
+async def activate_sovereign_investigation(
+    activation_data: dict,
+    authorization: Optional[str] = Header(None)
+):
+    """Activate Quantum Sovereign Access Level for tier investigation"""
+    try:
+        # Get user from JWT
+        payload = decode_jwt(authorization)
+        user_email = payload.get("email")
+        
+        if not user_email:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        session_id = activation_data.get("session_id")
+        if not session_id:
+            raise HTTPException(status_code=400, detail="Session ID required")
+        
+        # Activate override
+        success = temp_admin_override.activate_sovereign_investigation(user_email, session_id)
+        
+        if success:
+            return {
+                "status": "activated",
+                "access_level": "quantum_sovereign",
+                "investigator": user_email,
+                "session_id": session_id,
+                "expires_in_hours": 24,
+                "message": "Quantum Sovereign Access Level activated for tier investigation"
+            }
+        else:
+            raise HTTPException(status_code=403, detail="Unauthorized for tier investigation")
+            
+    except Exception as e:
+        logging.error(f"Sovereign investigation activation failed: {e}")
+        raise HTTPException(status_code=500, detail="Activation failed")
+
+@api_router.get("/admin/tier_investigation_preview")
+async def get_tier_investigation_preview(
+    session_id: str,
+    authorization: Optional[str] = Header(None)
+):
+    """Get comprehensive tier preview for investigation (authorized users only)"""
+    try:
+        # Get user from JWT
+        payload = decode_jwt(authorization)
+        user_email = payload.get("email")
+        
+        if not user_email:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        # Get tier preview with override check
+        tier_preview = temp_admin_override.get_all_tier_preview(user_email, session_id)
+        
+        if not tier_preview:
+            raise HTTPException(status_code=403, detail="Tier investigation access not active")
+        
+        return tier_preview
+        
+    except Exception as e:
+        logging.error(f"Tier investigation preview failed: {e}")
+        raise HTTPException(status_code=500, detail="Preview failed")
+
+@api_router.get("/admin/effective_tier_config")
+async def get_effective_tier_config(
+    session_id: str,
+    authorization: Optional[str] = Header(None)
+):
+    """Get effective tier configuration with any overrides applied"""
+    try:
+        # Get user from JWT
+        payload = decode_jwt(authorization)
+        user_email = payload.get("email")
+        
+        if not user_email:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        # Get base tier from user (would normally come from database)
+        base_tier = DEFAULT_USER.get("tier", "novice")
+        
+        # Get effective config with override
+        effective_config = temp_admin_override.get_effective_tier_config(
+            user_email, session_id, base_tier
+        )
+        
+        return {
+            "base_tier": base_tier,
+            "effective_config": effective_config,
+            "has_override": temp_admin_override.check_tier_override(user_email, session_id) is not None
+        }
+        
+    except Exception as e:
+        logging.error(f"Effective tier config failed: {e}")
+        raise HTTPException(status_code=500, detail="Config retrieval failed")
+
+@api_router.post("/admin/deactivate_override")
+async def deactivate_tier_override(
+    deactivation_data: dict,
+    authorization: Optional[str] = Header(None)
+):
+    """Deactivate tier override"""
+    try:
+        # Get user from JWT
+        payload = decode_jwt(authorization)
+        user_email = payload.get("email")
+        
+        if not user_email:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        session_id = deactivation_data.get("session_id")
+        if not session_id:
+            raise HTTPException(status_code=400, detail="Session ID required")
+        
+        # Deactivate override
+        success = temp_admin_override.deactivate_override(user_email, session_id)
+        
+        return {
+            "status": "deactivated" if success else "not_found",
+            "message": "Tier override deactivated" if success else "No active override found"
+        }
+        
+    except Exception as e:
+        logging.error(f"Override deactivation failed: {e}")
+        raise HTTPException(status_code=500, detail="Deactivation failed")
+
 async def create_chat_message(companion_id: str, message_data: ChatMessageCreate):
     # Verify companion exists
     companions_data = [
