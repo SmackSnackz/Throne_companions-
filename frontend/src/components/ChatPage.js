@@ -4,6 +4,7 @@ import axios from "axios";
 import SolicitationPanel from "./SolicitationPanel";
 import DistressResponse from "./DistressResponse";
 import PersonaSelector from "./PersonaSelector";
+import InvestigationPanel from "./InvestigationPanel";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
