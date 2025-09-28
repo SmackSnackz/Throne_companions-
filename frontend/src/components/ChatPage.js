@@ -74,6 +74,7 @@ const ChatPage = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         setIsAdmin(verifyResponse.data.is_admin);
+        setUserEmail(verifyResponse.data.email);
       } catch (err) {
         console.error("Auth setup failed:", err);
       }
