@@ -35,6 +35,20 @@ const CompanionSelection = ({ onCompanionSelected, selectedCompanion }) => {
     console.log('Companion clicked:', companionId);
     setSelected(companionId);
     
+    // Track companion selection
+    const companionName = companions.find(c => c.id === companionId)?.name || companionId;
+    tracker.trackUserChoice(`companion_${companionId}`, {
+      companion_id: companionId,
+      companion_name: companionName,
+      step: 'onboarding'
+    });
+    
+    // Track onboarding step
+    tracker.trackOnboardingStep('companion_selection', {
+      selected_companion: companionId,
+      companion_name: companionName
+    });
+    
     // Force re-render to show selection immediately
     const event = new CustomEvent('companionSelected', { detail: companionId });
     window.dispatchEvent(event);
