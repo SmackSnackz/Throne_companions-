@@ -245,6 +245,12 @@ const ChatPage = () => {
   const handlePersonaChange = (newPersona) => {
     setSelectedPersona(newPersona);
     localStorage.setItem('tc_selected_persona', newPersona);
+    
+    // Track persona selection
+    tracker.trackPersonaSelected(newPersona, {
+      companion_id: id,
+      session_id: sessionId
+    });
   };
   
   const handleAffectionChange = (newAffection) => {
