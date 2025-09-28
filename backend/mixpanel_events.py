@@ -190,6 +190,15 @@ class MixpanelTracker:
                 query["event_name"] = event_name
             
             events = await self.db.mixpanel_events.find(query).sort("timestamp", -1).to_list(length=100)
+            
+            # Convert ObjectId to string for JSON serialization
+            for event in events:
+                if '_id' in event:
+                    event['_id'] = str(event['_id'])
+                # Convert datetime to ISO string if needed
+                if 'timestamp' in event and hasattr(event['timestamp'], 'isoformat'):
+                    event['timestamp'] = event['timestamp'].isoformat()
+            
             return events
             
         except Exception as e:
