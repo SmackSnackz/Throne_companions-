@@ -70,6 +70,9 @@ db = client[os.environ['DB_NAME']]
 # Initialize Memory System
 memory_system = initialize_memory_system(db)
 
+# Initialize Mixpanel Tracker (in mock mode for testing)
+mixpanel_tracker = initialize_mixpanel_tracker(db, mock_mode=True)
+
 # Create the main app without a prefix
 app = FastAPI()
 
