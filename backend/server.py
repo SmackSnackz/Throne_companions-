@@ -31,6 +31,7 @@ from mixpanel_events import initialize_mixpanel_tracker, get_mixpanel_tracker
 from temp_admin_override import temp_admin_override
 from focused_expansion_system import focused_expansion_system
 from error_logger import initialize_error_logger, get_error_logger
+from email_auth_service import email_auth_service
 from models import *
 
 from pydantic import BaseModel
