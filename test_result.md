@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the new message tracking and admin bypass functionality: 1. Test the new `/api/chat` endpoint functionality, 2. Test JWT token creation and verification, 3. Test message counting without admin privileges, 4. Test admin bypass functionality, 5. Test session persistence"
+user_problem_statement: "Implement Memory System and Mixpanel Event Tracking: 1. Create chat history storage and memory summarization system, 2. Implement tier-based memory injection, 3. Add Mixpanel event tracking for user actions, 4. Test complete integration with existing chat functionality"
 
 backend:
   - task: "Tier system API endpoints"
