@@ -6,6 +6,7 @@ import HomePage from "./components/HomePage";
 import CompanionsPage from "./components/CompanionsPage";
 import ChatPage from "./components/ChatPage";
 import TierSelection from "./components/tiers/TierSelection";
+import AdminPanel from "./components/AdminPanel";
 
 function App() {
   const [isOnboarded, setIsOnboarded] = useState(false);
