@@ -1,0 +1,85 @@
+# Throne Companions - Git Ignore File
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Production builds
+frontend/build/
+frontend/dist/
+dist/
+build/
+
+# Environment files (exclude sensitive data)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Keep staging template for deployment
+!.env.staging
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/var/log/supervisor/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test and coverage
+coverage/
+.nyc_output
+.coverage
+*.cover
+
+# Cache directories
+.cache/
+.parcel-cache/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Screenshots and generated images
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Package files
+*.tgz
+*.tar.gz
+*.zip
+
+# Runtime files
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Emergent specific
+.emergent/
