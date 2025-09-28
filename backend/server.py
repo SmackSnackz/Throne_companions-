@@ -517,7 +517,7 @@ Current session context: This is an active conversation. Stay present and emotio
     else:
         new_count = get_count(session_key)
     
-    # 10) Save messages to database (existing logic)
+    # 12) Save messages to database (existing logic)
     try:
         # Save user message
         user_msg = ChatMessage(
