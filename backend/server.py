@@ -20,7 +20,7 @@ from analytics import get_analytics_tracker
 from dashboard import create_dashboard_routes
 from auth_utils import (
     decode_jwt, is_admin_user, incr_count, get_count, reset_count, 
-    set_expiry, generate_session_key, get_upgrade_message, FREE_LIMIT
+    set_expiry, generate_session_key, get_upgrade_message, FREE_LIMIT, JWT_SECRET
 )
 from solicitation import detect_and_solicit, build_llm_preface
 from tier_prompt_manager import tier_prompt_manager
