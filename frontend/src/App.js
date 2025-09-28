@@ -76,6 +76,7 @@ function App() {
           <Route path="/companions" element={<CompanionsPage />} />
           <Route path="/chat/:id" element={<ChatPage />} />
           <Route path="/tiers" element={<TierSelection />} />
+          <Route path="/admin" element={<AdminPanel />} />
           <Route path="/onboarding" element={<OnboardingFlow />} />
         </Routes>
       </BrowserRouter>
