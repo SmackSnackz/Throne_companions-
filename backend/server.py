@@ -602,7 +602,7 @@ Current session context: This is an active conversation. Stay present and emotio
     except Exception as e:
         logging.error(f"Mixpanel tracking failed: {e}")
     
-    # 11) GUARANTEED RESPONSE - Always return a proper chat response
+    # 13) GUARANTEED RESPONSE - Always return a proper chat response
     return {
         "type": "answer",
         "reply": reply_text,
