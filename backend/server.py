@@ -449,34 +449,26 @@ async def chat_endpoint(
     is_expansion_request = False
     expansion_context = {}
     
-    # Get conversation context for topic identification from memory system
-    try:
-        # Get recent messages from the current session for context
-        recent_history = await db.chat_history.find({
-            "user_id": user_id,
-            "session_id": session_id
-        }).sort("timestamp", -1).limit(6).to_list(length=6)
-        
-        conversation_context = ""
-        for msg in reversed(recent_history):
-            role = "User" if msg.get("direction") == "user" else "Companion"
-            conversation_context += f"{role}: {msg.get('message', '')}\n"
-        
-        # Also add the current message for better context
-        conversation_context += f"User: {request.message}\n"
-        
-    except Exception as e:
-        logging.warning(f"Failed to get conversation context: {e}")
-        conversation_context = f"User: {request.message}\n"
+    # Check for simple expansion request - much simpler approach
+    expansion_triggers = ["go deeper", "tell me more", "expand", "elaborate", "continue", "more details"]
+    is_expansion_request = any(trigger in request.message.lower() for trigger in expansion_triggers)
     
-    # Check for focused expansion request
-    expansion_result = focused_expansion_system.should_trigger_focused_expansion(
-        request.message, conversation_context
-    )
-    
-    if expansion_result["should_expand"]:
-        is_expansion_request = True
-        expansion_context = expansion_result
+    # Get the AI's last response to expand on
+    last_ai_response = ""
+    if is_expansion_request:
+        try:
+            # Get the most recent companion response from this session
+            last_companion_msg = await db.chat_history.find({
+                "user_id": user_id,
+                "session_id": session_id,
+                "direction": "companion"
+            }).sort("timestamp", -1).limit(1).to_list(length=1)
+            
+            if last_companion_msg:
+                last_ai_response = last_companion_msg[0].get("message", "")
+        except Exception as e:
+            logging.warning(f"Failed to get last AI response: {e}")
+            last_ai_response = ""
     
     # 9) Prepare message (with solicitation context if provided) - EXISTING LOGIC PRESERVED
     final_message = request.message
