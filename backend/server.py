@@ -27,6 +27,7 @@ from unified_prompt_system import unified_prompt_system
 from tone_anchor_system import tone_anchor_system
 from master_prompt_system import master_prompt_system
 from memory_system import initialize_memory_system, get_memory_system
+from mixpanel_events import initialize_mixpanel_tracker, get_mixpanel_tracker
 from models import *
 
 from pydantic import BaseModel
