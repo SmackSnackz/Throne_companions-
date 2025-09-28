@@ -1567,6 +1567,9 @@ body {
   margin: 0 auto;
   padding: 2rem;
   color: var(--throne-text-light);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .tier-header {
