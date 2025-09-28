@@ -120,7 +120,9 @@ const ChatPage = () => {
       const requestData = {
         companion_id: id,
         message: chosenStarter || newMessage.trim(),
-        session_id: sessionId
+        session_id: sessionId,
+        user_mode: selectedPersona,
+        affection_dial: affectionDial
       };
       
       // Add solicitation data if provided
