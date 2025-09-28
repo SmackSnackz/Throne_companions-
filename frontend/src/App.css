@@ -2425,3 +2425,156 @@ body {
     padding: 1rem;
   }
 }
+
+/* Persona Selector Styles */
+.persona-selector {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  border: 1px solid rgba(var(--throne-gold-rgb), 0.3);
+}
+
+.persona-selector-label {
+  color: var(--throne-gold);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.persona-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.persona-current {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(var(--throne-gold-rgb), 0.4);
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.persona-current:hover {
+  border-color: rgba(var(--throne-gold-rgb), 0.6);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.persona-current:focus {
+  outline: none;
+  border-color: var(--throne-gold);
+  box-shadow: 0 0 0 3px rgba(var(--throne-gold-rgb), 0.2);
+}
+
+.persona-icon {
+  font-size: 1.2rem;
+  margin-right: 0.75rem;
+}
+
+.persona-name {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+}
+
+.dropdown-arrow {
+  font-size: 0.8rem;
+  color: var(--throne-gold);
+  transition: transform 0.3s ease;
+}
+
+.persona-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--throne-deep-blue);
+  border: 2px solid rgba(var(--throne-gold-rgb), 0.4);
+  border-radius: 0.75rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.persona-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.persona-option:last-child {
+  border-bottom: none;
+}
+
+.persona-option:hover {
+  background: rgba(var(--throne-gold-rgb), 0.1);
+  transform: translateX(4px);
+}
+
+.persona-option.selected {
+  background: rgba(var(--throne-gold-rgb), 0.2);
+  border-left: 3px solid var(--throne-gold);
+}
+
+.persona-details {
+  flex: 1;
+  text-align: left;
+  margin-left: 0.75rem;
+}
+
+.persona-option .persona-name {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.persona-description {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--throne-silver);
+  opacity: 0.8;
+}
+
+/* Responsive persona selector */
+@media (max-width: 768px) {
+  .persona-selector {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  .persona-current {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .persona-option {
+    padding: 0.75rem;
+  }
+  
+  .persona-option .persona-name {
+    font-size: 0.9rem;
+  }
+  
+  .persona-description {
+    font-size: 0.75rem;
+  }
+}
