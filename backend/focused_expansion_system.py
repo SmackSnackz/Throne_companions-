@@ -39,36 +39,63 @@ class FocusedExpansionSystem:
         if not conversation_context:
             return None
         
-        # Look for concrete nouns, business concepts, strategies, etc.
-        # Focus on the most recent substantive topic
-        lines = conversation_context.strip().split('\n')
-        recent_lines = lines[-3:] if len(lines) >= 3 else lines
+        self.logger.info(f"Extracting topic from context: {conversation_context[:200]}...")
         
-        # Pattern to identify concrete topics (nouns, concepts, strategies)
+        # Look for concrete business/topic patterns in the conversation
+        lines = conversation_context.strip().split('\n')
+        
+        # Enhanced patterns to catch more business/topic scenarios
         topic_patterns = [
-            r'\b(?:starting|building|creating|developing|implementing)\s+(?:a\s+)?([a-zA-Z\s]+?)(?:\s+business|\s+strategy|\s+plan|\s+system)',
-            r'\b(?:the|this|that)\s+([a-zA-Z\s]+?)(?:\s+approach|\s+method|\s+technique|\s+process|\s+strategy)',
-            r'\b([a-zA-Z\s]+?)(?:\s+business|\s+service|\s+product|\s+solution|\s+framework)',
-            r'about\s+([a-zA-Z\s]+?)(?:\s+in|\s+for|\s+with|\.|\?)',
-            r'for\s+([a-zA-Z\s]+?)(?:\s+in|\s+to|\s+with|\.|\?)',
+            # "I want to start X" patterns
+            r'(?:want to|going to|plan to|thinking about|interested in)\s+(?:start|starting|create|creating|build|building)\s+(?:a\s+)?([^.?!\n]+)',
+            # "X business/agency/service" patterns  
+            r'(?:a\s+)?([a-zA-Z\s]+?)\s+(?:business|agency|service|company|startup|venture)',
+            # Direct business mentions
+            r'\b([a-zA-Z\s]+?)\s+(?:business|agency|service|company)',
+            # "starting X" patterns
+            r'starting\s+(?:a\s+)?([^.?!\n]+)',
+            # General topic extraction
+            r'about\s+([^.?!\n]+)',
         ]
         
-        for line in reversed(recent_lines):
-            for pattern in topic_patterns:
-                matches = re.findall(pattern, line, re.IGNORECASE)
-                if matches:
-                    # Return the most specific match, cleaned up
-                    topic = matches[0].strip()
-                    if len(topic) > 3 and topic not in ['the', 'this', 'that', 'your', 'our']:
-                        return topic
+        for line in reversed(lines):
+            if line.strip() and 'User:' in line:
+                user_text = line.split('User:')[-1].strip()
+                self.logger.info(f"Analyzing user text: {user_text}")
+                
+                for pattern in topic_patterns:
+                    matches = re.findall(pattern, user_text, re.IGNORECASE)
+                    for match in matches:
+                        topic = match.strip().lower()
+                        # Clean up the topic
+                        topic = re.sub(r'\s+', ' ', topic)  # normalize whitespace
+                        topic = topic.strip('.,!?')  # remove punctuation
+                        
+                        # Filter out very generic terms
+                        if (len(topic) > 3 and 
+                            topic not in ['the', 'this', 'that', 'your', 'our', 'and', 'with'] and
+                            not topic.startswith('go ') and
+                            'deeper' not in topic):
+                            self.logger.info(f"Extracted topic: {topic}")
+                            return topic
         
-        # Fallback: look for the last noun phrase mentioned
-        words = ' '.join(recent_lines).split()
-        for i in range(len(words) - 1, -1, -1):
-            if words[i].endswith('ing') or words[i] in ['business', 'strategy', 'plan', 'approach', 'method', 'service', 'product']:
-                context = ' '.join(words[max(0, i-2):i+1])
-                return context.strip()
+        # Fallback: look for key business terms
+        business_keywords = ['marketing', 'business', 'agency', 'service', 'company', 'startup', 'venture', 'consulting']
+        for line in reversed(lines):
+            if 'User:' in line:
+                user_text = line.split('User:')[-1].strip().lower()
+                for keyword in business_keywords:
+                    if keyword in user_text:
+                        # Try to extract context around the keyword
+                        words = user_text.split()
+                        for i, word in enumerate(words):
+                            if keyword in word:
+                                start = max(0, i-2)
+                                end = min(len(words), i+3)
+                                context = ' '.join(words[start:end])
+                                return context.strip()
         
+        self.logger.info("No specific topic extracted")
         return None
     
     def build_focused_expansion_prompt(self, 
