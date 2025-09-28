@@ -1766,6 +1766,9 @@ body {
   border-radius: 15px;
   overflow: hidden;
   backdrop-filter: blur(10px);
+  width: 100%;
+  min-width: 600px;
+  overflow-x: auto;
 }
 
 .comparison-row {
