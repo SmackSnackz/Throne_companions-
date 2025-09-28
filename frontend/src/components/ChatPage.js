@@ -217,6 +217,16 @@ const ChatPage = () => {
     setSolicitation(null);
     setDistressResponse(null);
   };
+  
+  const handlePersonaChange = (newPersona) => {
+    setSelectedPersona(newPersona);
+    localStorage.setItem('tc_selected_persona', newPersona);
+  };
+  
+  const handleAffectionChange = (newAffection) => {
+    setAffectionDial(newAffection);
+    localStorage.setItem('tc_affection_dial', newAffection.toString());
+  };
 
   if (loading) {
     return <div className="loading">Loading companion...</div>;
