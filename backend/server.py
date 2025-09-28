@@ -325,6 +325,9 @@ async def chat_endpoint(
     role = payload.get("role", "user")
     is_admin = is_admin_user(payload)
     
+    # Get user ID for memory system
+    user_id = email or "demo_user"
+    
     # 3) Ensure session ID
     session_id = request.session_id or f"session:{email or 'anon'}:{int(time.time())}"
     session_key = generate_session_key(session_id)
