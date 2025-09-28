@@ -360,6 +360,8 @@ const ChatPage = () => {
             companionName={companion.name}
             onExpansionRequest={handleDistressExpansion}
             onContinue={clearAllSpecialModes}
+            companionId={id}
+            sessionId={sessionId}
           />
         )}
 
