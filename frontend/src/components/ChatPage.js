@@ -207,6 +207,18 @@ const ChatPage = () => {
       setMessages(prev => [...prev, userMsg, companionMsg]);
       setNewMessage("");
       
+      // Track message sent to Mixpanel
+      tracker.trackMessageSent({
+        companion_id: id,
+        message_length: (chosenStarter || newMessage.trim()).length,
+        user_tier: isAdmin ? 'admin' : 'novice',
+        session_id: sessionId,
+        persona: selectedPersona
+      });
+      
+      // Track agent used
+      tracker.trackAgentUsed(id, companion?.name || id, isAdmin ? 'admin' : 'novice');
+      
       // Update usage stats
       if (data.used !== undefined) setUsedCount(data.used);
       if (data.upgrade) setShowUpgrade(true);
