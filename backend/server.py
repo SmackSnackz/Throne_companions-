@@ -454,7 +454,7 @@ async def chat_endpoint(
             logging.warning(f"Failed to build solicitation preface: {e}")
             final_message = request.chosen_starter or request.message
     
-    # 9) MASTER PROMPT SYSTEM - Insert Master Prompt as global system prompt (King Sol Specification)
+    # 10) MASTER PROMPT SYSTEM - Insert Master Prompt as global system prompt (King Sol Specification)
     try:
         # Get user tier for additional context
         user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
