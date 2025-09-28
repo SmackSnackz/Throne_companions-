@@ -509,7 +509,7 @@ Current session context: This is an active conversation. Stay present and emotio
         # Fallback response to guarantee user always gets a response (EXISTING LOGIC PRESERVED)
         reply_text = f"I apologize, but I'm having some technical difficulties right now. Please try again in a moment, or let me know if you'd like me to help you with something specific."
     
-    # 9) Increment counter for non-admin users AFTER successful reply
+    # 11) Increment counter for non-admin users AFTER successful reply
     if not is_admin:
         new_count = incr_count(session_key)
         # Set TTL to 1 hour to expire session counters
