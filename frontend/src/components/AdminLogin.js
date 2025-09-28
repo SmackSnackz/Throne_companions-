@@ -6,30 +6,54 @@ const API = `${BACKEND_URL}/api`;
 
 const AdminLogin = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [accessCode, setAccessCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
+  const [codeResult, setCodeResult] = useState(null);
 
-  const handleLogin = async (e) => {
+  const handleRequestCode = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      // Create admin token
-      const response = await axios.post(`${API}/auth/create-token`, {
-        email: email,
-        role: 'admin'
+      const response = await axios.post(`${API}/auth/request-admin-code`, {
+        email: email
       });
 
-      if (response.data.token) {
+      if (response.data.success) {
+        setCodeSent(true);
+        setCodeResult(response.data);
+        setError('');
+      }
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to send access code');
+      console.error('Code request failed:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post(`${API}/auth/verify-admin-code`, {
+        email: email,
+        code: accessCode
+      });
+
+      if (response.data.success && response.data.token) {
         localStorage.setItem('tc_admin_jwt', response.data.token);
         localStorage.setItem('tc_admin_session', Date.now().toString());
         onLoginSuccess(response.data);
       }
     } catch (err) {
-      setError('Invalid admin credentials');
-      console.error('Admin login failed:', err);
+      setError(err.response?.data?.detail || 'Invalid access code');
+      console.error('Code verification failed:', err);
     } finally {
       setLoading(false);
     }
