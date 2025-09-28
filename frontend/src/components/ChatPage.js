@@ -307,8 +307,15 @@ const ChatPage = () => {
           />
         )}
 
+        {/* Persona Selector - Always visible */}
+        <PersonaSelector
+          selectedPersona={selectedPersona}
+          onPersonaChange={handlePersonaChange}
+          isVisible={!solicitation && !distressResponse}
+        />
+
         {/* Regular Message Input */}
-        {!solicitation && (
+        {!solicitation && !distressResponse && (
           <form onSubmit={sendMessage} className="message-input-container">
             <input
               type="text"
