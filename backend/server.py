@@ -29,6 +29,7 @@ from master_prompt_system import master_prompt_system
 from memory_system import initialize_memory_system, get_memory_system
 from mixpanel_events import initialize_mixpanel_tracker, get_mixpanel_tracker
 from temp_admin_override import temp_admin_override
+from focused_expansion_system import focused_expansion_system
 from models import *
 
 from pydantic import BaseModel
