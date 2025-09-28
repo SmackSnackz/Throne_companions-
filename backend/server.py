@@ -350,12 +350,19 @@ async def chat_endpoint(
     
     # 4) SESSION START SOLICITATION CHECK - Check if this is a new session without previous messages
     try:
-        # Check if this is the first message in the session
-        session_message_count = await memory_system.get_session_message_count(user_id, session_id)
-        is_new_session = session_message_count == 0
+        # Check both message systems to prevent loopback bug
+        memory_message_count = await memory_system.get_session_message_count(user_id, session_id)
         
-        # If new session and no solicitation answers provided, trigger session start solicitation
-        if is_new_session and not request.solicitation_answers and not request.chosen_starter:
+        # Also check existing chat_messages collection to prevent false new-session detection
+        existing_messages = await db.chat_messages.find({
+            "companion_id": request.companion_id
+        }).limit(1).to_list(length=1)
+        
+        # Only trigger session start if BOTH systems show no messages (true new session)
+        is_truly_new_session = (memory_message_count == 0 and len(existing_messages) == 0)
+        
+        # If truly new session and no solicitation answers provided, trigger session start solicitation
+        if is_truly_new_session and not request.solicitation_answers and not request.chosen_starter:
             session_start_response = {
                 "type": "solicitation",
                 "tag": "Session Start - How should I support you?",
