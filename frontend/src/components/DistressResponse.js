@@ -1,9 +1,16 @@
 import React from "react";
 import tracker from "../utils/mixpanel";
 
-const DistressResponse = ({ response, companionName, onExpansionRequest, onContinue }) => {
+const DistressResponse = ({ response, companionName, onExpansionRequest, onContinue, companionId, sessionId }) => {
   const handleExpansionClick = () => {
     if (onExpansionRequest) {
+      // Track go deeper usage
+      tracker.trackGoDeeper({
+        companion_id: companionId,
+        expansion_message: "go deeper",
+        session_id: sessionId
+      });
+      
       onExpansionRequest("go deeper");
     }
   };
