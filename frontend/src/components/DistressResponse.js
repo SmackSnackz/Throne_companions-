@@ -1,4 +1,5 @@
 import React from "react";
+import tracker from "../utils/mixpanel";
 
 const DistressResponse = ({ response, companionName, onExpansionRequest, onContinue }) => {
   const handleExpansionClick = () => {
