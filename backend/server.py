@@ -675,6 +675,18 @@ Ask the user: "What specific aspect would you like me to expand on?" and offer 2
     except Exception as e:
         logging.error(f"Mixpanel tracking failed: {e}")
     
+    # 13.2) ERROR LOGGING - Check for agent malfunctions
+    try:
+        await error_logger.analyze_response_quality(
+            response=reply_text,
+            user_message=request.message,
+            session_id=session_id,
+            user_id=user_id,
+            expected_topic=None  # Could be enhanced with topic tracking
+        )
+    except Exception as e:
+        logging.error(f"Error logging failed: {e}")
+    
     # 13) GUARANTEED RESPONSE - Always return a proper chat response
     return {
         "type": "answer",
