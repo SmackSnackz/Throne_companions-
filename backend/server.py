@@ -655,6 +655,102 @@ async def complete_session(
         logging.error(f"Session completion failed: {e}")
         raise HTTPException(status_code=500, detail="Session completion failed")
 
+@api_router.post("/events/companion_selected")
+async def track_companion_selected(event_data: dict):
+    """Track companion selection event"""
+    try:
+        user_id = event_data.get("user_id", "demo_user")
+        companion_id = event_data.get("companion_id")
+        companion_name = event_data.get("companion_name")  
+        session_id = event_data.get("session_id", f"onboarding_{user_id}")
+        
+        await mixpanel_tracker.track_companion_selected(
+            user_id=user_id,
+            companion_id=companion_id,
+            companion_name=companion_name,
+            session_id=session_id
+        )
+        
+        return {"status": "tracked", "event": "companion_selected"}
+        
+    except Exception as e:
+        logging.error(f"Companion selection tracking failed: {e}")
+        raise HTTPException(status_code=500, detail="Event tracking failed")
+
+@api_router.post("/events/tier_selected") 
+async def track_tier_selected(event_data: dict):
+    """Track tier selection event"""
+    try:
+        user_id = event_data.get("user_id", "demo_user")
+        tier_name = event_data.get("tier_name")
+        tier_price = event_data.get("tier_price", "Free")
+        session_id = event_data.get("session_id", f"onboarding_{user_id}")
+        
+        await mixpanel_tracker.track_tier_selected(
+            user_id=user_id,
+            tier_name=tier_name,
+            tier_price=tier_price,
+            session_id=session_id
+        )
+        
+        return {"status": "tracked", "event": "tier_selected"}
+        
+    except Exception as e:
+        logging.error(f"Tier selection tracking failed: {e}")
+        raise HTTPException(status_code=500, detail="Event tracking failed")
+
+@api_router.post("/events/upgrade_clicked")
+async def track_upgrade_clicked(event_data: dict):
+    """Track upgrade CTA clicked event"""
+    try:
+        user_id = event_data.get("user_id", "demo_user")
+        current_tier = event_data.get("current_tier", "novice")
+        target_tier = event_data.get("target_tier", "apprentice")
+        source = event_data.get("source", "tier_page")
+        session_id = event_data.get("session_id", f"upgrade_{user_id}")
+        
+        await mixpanel_tracker.track_upgrade_tier_clicked(
+            user_id=user_id,
+            current_tier=current_tier,
+            target_tier=target_tier,
+            source=source,
+            session_id=session_id
+        )
+        
+        return {"status": "tracked", "event": "upgrade_tier_clicked"}
+        
+    except Exception as e:
+        logging.error(f"Upgrade click tracking failed: {e}")
+        raise HTTPException(status_code=500, detail="Event tracking failed")
+
+@api_router.get("/events/mock")
+async def get_mock_events(user_id: Optional[str] = None, event_name: Optional[str] = None):
+    """Get mock events for verification (mock mode only)"""
+    try:
+        events = await mixpanel_tracker.get_mock_events(user_id, event_name)
+        return {
+            "mock_mode": True,
+            "events": events,
+            "count": len(events)
+        }
+    except Exception as e:
+        logging.error(f"Failed to get mock events: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get events")
+
+@api_router.get("/events/stats")
+async def get_event_stats():
+    """Get event statistics"""
+    try:
+        event_counts = await mixpanel_tracker.get_event_counts()
+        return {
+            "mock_mode": True,
+            "event_counts": event_counts,
+            "total_events": sum(event_counts.values())
+        }
+    except Exception as e:
+        logging.error(f"Failed to get event stats: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get stats")
+
 async def create_chat_message(companion_id: str, message_data: ChatMessageCreate):
     # Verify companion exists
     companions_data = [
