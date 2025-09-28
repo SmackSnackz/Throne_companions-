@@ -449,19 +449,25 @@ async def chat_endpoint(
     is_expansion_request = False
     expansion_context = {}
     
-    # Get conversation context for topic identification
+    # Get conversation context for topic identification from memory system
     try:
-        recent_messages = await db.chat_messages.find({
-            "companion_id": request.companion_id
-        }).sort("timestamp", -1).limit(5).to_list(length=5)
+        # Get recent messages from the current session for context
+        recent_history = await db.chat_history.find({
+            "user_id": user_id,
+            "session_id": session_id
+        }).sort("timestamp", -1).limit(6).to_list(length=6)
         
         conversation_context = ""
-        for msg in reversed(recent_messages):
-            role = "User" if msg.get("is_user", False) else "Companion"
+        for msg in reversed(recent_history):
+            role = "User" if msg.get("direction") == "user" else "Companion"
             conversation_context += f"{role}: {msg.get('message', '')}\n"
+        
+        # Also add the current message for better context
+        conversation_context += f"User: {request.message}\n"
+        
     except Exception as e:
         logging.warning(f"Failed to get conversation context: {e}")
-        conversation_context = ""
+        conversation_context = f"User: {request.message}\n"
     
     # Check for focused expansion request
     expansion_result = focused_expansion_system.should_trigger_focused_expansion(
