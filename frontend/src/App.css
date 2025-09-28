@@ -1846,24 +1846,71 @@ body {
 
 /* Responsive Design for Tiers */
 @media (max-width: 768px) {
+  .tier-selection {
+    padding: 1rem;
+  }
+  
   .tiers-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .tier-card {
+    padding: 1.5rem;
+  }
+  
+  .tier-header h2 {
+    font-size: 2rem;
+  }
+  
+  .comparison-table {
+    min-width: 500px;
   }
   
   .comparison-row {
-    grid-template-columns: 1fr;
-    text-align: left;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .feature-name {
+    font-size: 0.85rem;
   }
   
   .tier-col {
-    text-align: left;
-    margin-left: 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tier-selection {
+    padding: 0.5rem;
   }
   
-  .tier-col::before {
-    content: attr(data-label) ': ';
-    font-weight: bold;
-    color: var(--throne-gold);
+  .tier-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .tier-header p {
+    font-size: 1rem;
+  }
+  
+  .comparison-table {
+    min-width: 400px;
+  }
+  
+  .comparison-row {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .feature-name {
+    font-size: 0.8rem;
+  }
+  
+  .tier-col {
+    font-size: 0.8rem;
   }
 }
 
