@@ -431,7 +431,11 @@ async def chat_endpoint(
             }
     
     # 7) Get user tier (admin gets best tier, others get their actual tier)  
-    user_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
+    base_tier = "sovereign" if is_admin else DEFAULT_USER.get("tier", "novice")
+    
+    # 7.1) Check for temporary tier override (investigation mode)
+    tier_override = temp_admin_override.check_tier_override(user_id, session_id)
+    user_tier = tier_override["tier_override"] if tier_override else base_tier
     
     # 8) Handle expansion requests for both distress mode and general responses
     is_expansion_request = False
