@@ -84,10 +84,10 @@ const TierSelection = ({ onTierSelected, currentTier = "novice" }) => {
                   <h4>Communication</h4>
                   <div className="modes-list">
                     {tier.allowed_modes.includes('all') ? 
-                      ['Text', 'Voice', 'Visuals', 'Finance', 'Custom'].map(mode => (
+                      ['Text', 'Voice', 'Finance', 'Custom'].map(mode => (
                         <span key={mode} className="mode-badge enabled">{mode}</span>
                       )) :
-                      ['Text', 'Voice', 'Visuals', 'Finance', 'Custom'].map(mode => (
+                      ['Text', 'Voice', 'Finance', 'Custom'].map(mode => (
                         <span 
                           key={mode} 
                           className={`mode-badge ${tier.allowed_modes.includes(mode.toLowerCase()) ? 'enabled' : 'disabled'}`}
