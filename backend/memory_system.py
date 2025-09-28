@@ -4,7 +4,7 @@ Handles chat history collection, memory summarization, and injection logic.
 """
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Dict, Any, Tuple
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from pydantic import BaseModel, Field
