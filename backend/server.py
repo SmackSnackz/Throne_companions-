@@ -430,7 +430,7 @@ Current session context: This is an active conversation. Stay present and emotio
             companion_id=request.companion_id,
             user_mode=request.user_mode or "Confidant",
             affection_dial=request.affection_dial or 2,
-            memory_summary=request.memory_summary or "",
+            memory_summary=effective_memory_summary,
             additional_context=additional_context
         )
         
