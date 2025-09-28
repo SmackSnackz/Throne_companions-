@@ -31,19 +31,48 @@ const AdminDashboard = ({ onLogout }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('tc_admin_jwt');
-      const response = await axios.post(`${API}/admin/test-tier-behavior`, {
-        tier: tier,
-        test_message: "Tell me about starting a business"
+      
+      // First activate tier override for testing
+      await axios.post(`${API}/admin/activate_sovereign_investigation`, {
+        session_id: `admin_tier_test_${tier}_${Date.now()}`
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Then test actual chat with the tier
+      const chatResponse = await axios.post(`${API}/chat`, {
+        companion_id: "sophia",
+        message: "Tell me about starting a business",
+        session_id: `admin_tier_test_${tier}_${Date.now()}`,
+        user_mode: "Confidant",
+        affection_dial: 2
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       setTierBehaviors(prev => ({
         ...prev,
-        [tier]: response.data
+        [tier]: {
+          response: chatResponse.data.reply,
+          memory_summaries: chatResponse.data.memory_summaries || 0,
+          features_used: {
+            memory_access: chatResponse.data.memory_access || false,
+            unlimited_messages: chatResponse.data.is_admin || false,
+            tier_features: tier
+          },
+          response_length: chatResponse.data.reply?.length || 0,
+          tier: tier
+        }
       }));
     } catch (err) {
       console.error('Tier behavior test failed:', err);
+      setTierBehaviors(prev => ({
+        ...prev,
+        [tier]: {
+          error: err.response?.data?.detail || 'Test failed',
+          tier: tier
+        }
+      }));
     } finally {
       setLoading(false);
     }
