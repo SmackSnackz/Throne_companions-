@@ -569,7 +569,7 @@ Current session context: This is an active conversation. Stay present and emotio
     except Exception as e:
         logging.error(f"Memory storage failed: {e}")
     
-    # 11.1) MIXPANEL EVENT TRACKING - Track message sent
+    # 13.1) MIXPANEL EVENT TRACKING - Track message sent
     try:
         await mixpanel_tracker.track_message_sent(
             user_id=user_id,
