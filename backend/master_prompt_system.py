@@ -150,9 +150,16 @@ Your natural style is bold, intuitive, and refreshingly honest."""
         master_prompt = self.build_master_prompt(user_mode, affection_dial, memory_summary)
         persona_overlay = self.get_persona_overlay(companion_id)
         
+        # Add continuous conversation flow context
+        conversation_flow_context = """
+CONVERSATION FLOW:
+This is a continuous, ongoing conversation. Do NOT start responses with greetings like "Hello", "Hey there", "Hi" unless the user just greeted you first. Simply continue the natural flow of conversation by responding directly to what the user said. Be conversational and natural, as if you're already mid-conversation with someone you know."""
+
         complete_prompt = f"""{master_prompt}
 
 {persona_overlay}
+
+{conversation_flow_context}
 
 {additional_context}"""
         
