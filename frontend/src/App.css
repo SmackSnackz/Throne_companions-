@@ -2588,3 +2588,261 @@ body {
     font-size: 0.75rem;
   }
 }
+
+/* Investigation Panel Styles */
+.investigation-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.investigation-panel {
+  background: linear-gradient(135deg, var(--throne-deep-blue), #1a202c);
+  border: 2px solid var(--throne-gold);
+  border-radius: 1rem;
+  width: 95%;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.investigation-header {
+  background: linear-gradient(135deg, var(--throne-gold), #d69e2e);
+  color: var(--throne-deep-blue);
+  padding: 1.5rem;
+  border-radius: 1rem 1rem 0 0;
+  position: relative;
+}
+
+.investigation-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.investigation-header p {
+  margin: 0.5rem 0 0 0;
+  opacity: 0.8;
+}
+
+.close-investigation {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--throne-deep-blue);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.close-investigation:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.investigation-content {
+  padding: 2rem;
+  color: white;
+}
+
+.investigation-activation {
+  text-align: center;
+}
+
+.investigation-activation h3 {
+  color: var(--throne-gold);
+  margin-bottom: 1rem;
+}
+
+.investigation-error {
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid #dc2626;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  color: #fca5a5;
+}
+
+.activate-investigation-btn {
+  background: linear-gradient(135deg, var(--throne-gold), #d69e2e);
+  color: var(--throne-deep-blue);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.activate-investigation-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+}
+
+.activate-investigation-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.investigation-active {
+  animation: fadeIn 0.5s ease;
+}
+
+.investigation-status {
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid #10b981;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.status-indicator {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.status-indicator.active {
+  color: #10b981;
+}
+
+.effective-config {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.effective-config h4 {
+  color: var(--throne-gold);
+  margin-bottom: 1rem;
+}
+
+.config-display p {
+  margin: 0.5rem 0;
+}
+
+.tier-preview {
+  margin-bottom: 2rem;
+}
+
+.tier-preview h4 {
+  color: var(--throne-gold);
+  margin-bottom: 1.5rem;
+}
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.tier-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+.tier-card h5 {
+  color: var(--throne-gold);
+  margin-bottom: 1rem;
+}
+
+.finance-features, .memory-details {
+  margin-top: 1rem;
+}
+
+.finance-features h6, .memory-details h6 {
+  color: var(--throne-silver);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.feature-tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  margin: 0.25rem;
+}
+
+.feature-tag.enabled {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.feature-tag.disabled {
+  background: rgba(220, 38, 38, 0.2);
+  color: #fca5a5;
+}
+
+.finance-modules, .custom-logic {
+  margin-top: 2rem;
+}
+
+.finance-modules h4, .custom-logic h4 {
+  color: var(--throne-gold);
+  margin-bottom: 1rem;
+}
+
+.finance-module, .logic-module {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.finance-module h5, .logic-module h5 {
+  color: var(--throne-silver);
+  margin-bottom: 0.5rem;
+}
+
+.module-features {
+  margin-top: 0.5rem;
+}
+
+.deactivate-investigation-btn {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.deactivate-investigation-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+}
+
+.deactivate-investigation-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
