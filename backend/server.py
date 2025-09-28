@@ -624,6 +624,20 @@ async def complete_session(
         # Generate and store memory summary
         summary = await memory_system.complete_session_and_summarize(user_id, session_id)
         
+        # Track session ended
+        try:
+            message_count = await memory_system.get_session_message_count(user_id, session_id)
+            companion_id = session_data.get("companion_id", "unknown")
+            
+            await mixpanel_tracker.track_session_ended(
+                user_id=user_id,
+                session_id=session_id,
+                companion_id=companion_id,
+                message_count=message_count
+            )
+        except Exception as e:
+            logging.error(f"Session end tracking failed: {e}")
+        
         if summary:
             return {
                 "status": "completed",
