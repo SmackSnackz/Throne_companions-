@@ -1874,6 +1874,24 @@ body {
   margin-left: 1rem;
 }
 
+.investigation-access-btn {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+}
+
+.investigation-access-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
 .usage-counter {
   color: var(--throne-silver);
   font-size: 0.875rem;
