@@ -72,7 +72,13 @@ class FocusedExpansionSystem:
                 for pattern in topic_patterns:
                     matches = re.findall(pattern, user_text, re.IGNORECASE)
                     for match in matches:
-                        topic = match.strip().lower()
+                        # Handle both string matches and tuple matches from groups
+                        if isinstance(match, tuple):
+                            # Join all non-empty groups
+                            topic = ' '.join([group for group in match if group.strip()]).strip().lower()
+                        else:
+                            topic = match.strip().lower()
+                        
                         # Clean up the topic
                         topic = re.sub(r'\s+', ' ', topic)  # normalize whitespace
                         topic = topic.strip('.,!?')  # remove punctuation
