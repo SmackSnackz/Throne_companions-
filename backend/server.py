@@ -378,6 +378,18 @@ async def chat_endpoint(
     if not is_admin:
         current_count = get_count(session_key)
         if current_count >= FREE_LIMIT:
+            # Track upgrade CTA shown
+            try:
+                await mixpanel_tracker.track_upgrade_tier_clicked(
+                    user_id=user_id,
+                    current_tier="novice",
+                    target_tier="apprentice",
+                    source="chat_limit",
+                    session_id=session_id
+                )
+            except Exception as e:
+                logging.error(f"Upgrade CTA tracking failed: {e}")
+            
             # Send upgrade CTA
             upgrade_msg = get_upgrade_message(request.companion_id)
             return {
