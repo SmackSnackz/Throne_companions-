@@ -66,6 +66,9 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Initialize Memory System
+memory_system = initialize_memory_system(db)
+
 # Create the main app without a prefix
 app = FastAPI()
 
