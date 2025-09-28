@@ -76,6 +76,9 @@ memory_system = initialize_memory_system(db)
 # Initialize Mixpanel Tracker (in mock mode for testing)
 mixpanel_tracker = initialize_mixpanel_tracker(db, mock_mode=True)
 
+# Initialize Error Logger
+error_logger = initialize_error_logger(db)
+
 # Create the main app without a prefix
 app = FastAPI()
 
