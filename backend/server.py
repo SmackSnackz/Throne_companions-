@@ -445,12 +445,32 @@ async def chat_endpoint(
     tier_override = temp_admin_override.check_tier_override(user_id, session_id)
     user_tier = tier_override["tier_override"] if tier_override else base_tier
     
-    # 8) Handle expansion requests for both distress mode and general responses
+    # 8) Handle focused expansion requests - PATCHED UX for "Go Deeper" feature
     is_expansion_request = False
-    if (request.expansion_requested or 
-        unified_prompt_system.check_expansion_request(request.message) or 
-        tone_anchor_system.check_expansion_request(request.message)):
+    expansion_context = {}
+    
+    # Get conversation context for topic identification
+    try:
+        recent_messages = await db.chat_messages.find({
+            "companion_id": request.companion_id
+        }).sort("timestamp", -1).limit(5).to_list(length=5)
+        
+        conversation_context = ""
+        for msg in reversed(recent_messages):
+            role = "User" if msg.get("is_user", False) else "Companion"
+            conversation_context += f"{role}: {msg.get('message', '')}\n"
+    except Exception as e:
+        logging.warning(f"Failed to get conversation context: {e}")
+        conversation_context = ""
+    
+    # Check for focused expansion request
+    expansion_result = focused_expansion_system.should_trigger_focused_expansion(
+        request.message, conversation_context
+    )
+    
+    if expansion_result["should_expand"]:
         is_expansion_request = True
+        expansion_context = expansion_result
     
     # 9) Prepare message (with solicitation context if provided) - EXISTING LOGIC PRESERVED
     final_message = request.message
