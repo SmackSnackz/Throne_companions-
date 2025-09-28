@@ -512,6 +512,32 @@ Current session context: This is an active conversation. Stay present and emotio
             additional_context=additional_context
         )
         
+        # FOCUSED EXPANSION SYSTEM - PATCHED UX for "Go Deeper"
+        if is_expansion_request:
+            # Build focused expansion prompt instead of abstract expansion
+            last_topic = expansion_context.get("last_topic")
+            focused_expansion_prompt = focused_expansion_system.build_focused_expansion_prompt(
+                persona=request.companion_id,
+                last_topic=last_topic,
+                user_tier=user_tier,
+                original_message=request.message
+            )
+            
+            # Integrate focused expansion with existing system prompt
+            system_prompt = f"""{system_prompt}
+
+{focused_expansion_prompt}
+
+CRITICAL: This is a "Go Deeper" request. Stay focused on the specific topic and provide practical, step-by-step expansion. Do not interpret metaphorically or spiritually unless explicitly asked."""
+        else:
+            # Default grounded response using existing tone anchor system
+            system_prompt = tone_anchor_system.build_grounded_system_prompt(
+                persona=request.companion_id,
+                base_personality=system_prompt,
+                user_tier=user_tier,
+                is_expansion=False
+            )
+        
         # Use emergentintegrations LLM (EXISTING INTEGRATION PRESERVED)
         user_message = UserMessage(text=final_message)
         companion_chat = LlmChat(
