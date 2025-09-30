@@ -82,4 +82,15 @@ pids/
 *.pid.lock
 
 # Emergent specific
-.emergent/
+.emergent/-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
