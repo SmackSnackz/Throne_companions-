@@ -7,7 +7,7 @@ services:
     repo: https://github.com/your-username/throne-companions.git
     buildCommand: |
       cd frontend && yarn install && yarn build
-      cd ../backend && pip install -r requirements.txt
+      cd ../backend && pip install --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/ -r requirements.txt
     startCommand: cd backend && python server.py
     envVars:
       - key: NODE_ENV
