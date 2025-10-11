@@ -1,0 +1,38 @@
+# Render.com deployment configuration for Throne Companions Backend
+services:
+  - type: web
+    name: throne-companions-backend
+    env: python
+    plan: starter
+    buildCommand: |
+      pip install --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/ -r requirements.txt
+    startCommand: python server.py
+    envVars:
+      - key: MONGO_URL
+        value: mongodb://localhost:27017/throne_companions
+      - key: DB_NAME
+        value: throne_companions
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: EMERGENT_LLM_KEY
+        # Replace with your actual key or use Render's secret management
+        value: your_emergent_llm_key_here
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAILS
+        value: admin@thronecompanions.com,roy@thronecompanions.com
+      - key: FREE_TIER_MESSAGE_LIMIT
+        value: "20"
+      - key: REDIS_URL
+        value: redis://localhost:6379
+
+  # Optional: MongoDB service (if you want managed MongoDB)
+  # - type: pserv
+  #   name: throne-companions-mongo
+  #   env: docker
+  #   plan: starter
+  #   dockerfilePath: ./mongo.Dockerfile
+  #   disk:
+  #     name: mongo-data
+  #     mountPath: /data/db
+  #     sizeGB: 1

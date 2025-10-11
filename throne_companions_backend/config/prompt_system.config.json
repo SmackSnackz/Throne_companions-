@@ -1,0 +1,91 @@
+{
+  "version": "2.0",
+  "distress_mode": {
+    "trigger_keywords": [
+      "i don't know what to do",
+      "i dont know what to do",
+      "i'm lost",
+      "im lost",
+      "i'm stuck",
+      "im stuck",
+      "i'm confused",
+      "im confused",
+      "i need help but don't know where to start",
+      "i want to but don't know how",
+      "i want to start a business but don't know",
+      "i don't know how to begin",
+      "i dont know how to begin"
+    ],
+    "response_structure": {
+      "step1_acknowledge": "Acknowledge uncertainty or distress.",
+      "step2_reanchor": "Explicitly repeat the user's goal.",
+      "step3_nextsteps": "Give only 2–3 clear, practical next steps."
+    },
+    "expansion_rule": {
+      "trigger_words": ["go deeper", "deep dive", "elaborate", "explain more", "expand"],
+      "behavior": "Expand into details only if these words appear."
+    },
+    "personas": {
+      "sophia": { "style": "Elegant Teacher", "tone": "Gentle, guiding, reassuring" },
+      "vanessa": { "style": "Direct Street-Smart", "tone": "Straightforward, motivational" },
+      "aurora": { "style": "Futuristic Tech-Divine", "tone": "Sleek, structured, schematic" }
+    },
+    "ui": {
+      "brand_tag": "Powered by Prompt Solicitation Layer™ + Distress Mode Anchoring",
+      "max_steps": 3
+    }
+  },
+  "prompt_solicitation": {
+    "trigger_keywords": ["help", "idk", "not sure", "?", "lost", "confused"],
+    "clarifiers": ["goal", "detail", "decision", "mode"],
+    "starter_prompts": [
+      "Explain this topic like I'm a beginner.",
+      "Show me the first 3 steps to start.",
+      "Give me a quick definition before details."
+    ],
+    "ui": {
+      "brand_tag": "Powered by Prompt Solicitation Layer™"
+    }
+  },
+  "tiers": {
+    "free": {
+      "starter_prompts": [
+        "Explain like I'm new.",
+        "Show me 3 steps to begin.",
+        "Define this simply, then expand."
+      ],
+      "max_response_length": 2,
+      "clarifiers": []
+    },
+    "apprentice": {
+      "starter_prompts": [
+        "Summarize first, then expand.",
+        "Give me step by step.",
+        "Explain in 3 points.",
+        "Start with a simple definition."
+      ],
+      "max_response_length": 3,
+      "clarifiers": ["goal", "detail"]
+    },
+    "regent": {
+      "starter_prompts": [
+        "What's the better way to ask this?",
+        "Teach me a clearer phrasing.",
+        "Show me 2 alternate prompts I could use."
+      ],
+      "max_response_length": 3,
+      "clarifiers": ["goal", "detail", "decision"],
+      "features": ["save_prompt", "pin_prompt"]
+    },
+    "sovereign": {
+      "starter_prompts": [
+        "Search my prompt history.",
+        "Switch me to voice mode.",
+        "Collaborate with me on this idea."
+      ],
+      "max_response_length": "unlimited",
+      "clarifiers": ["goal", "detail", "decision", "mode"],
+      "features": ["save_prompt", "pin_prompt", "search_prompt", "voice_toggle"]
+    }
+  }
+}

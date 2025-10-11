@@ -1,0 +1,125 @@
+{
+  "version": "1.0",
+  "tiers": {
+    "novice": {
+      "name": "Free Tier (Apprentice Entry)",
+      "max_starters_per_session": 3,
+      "max_response_length": 150,
+      "response_style": "concise",
+      "clarifiers": ["goal", "detail"],
+      "starter_prompts": [
+        "Explain like I'm new.",
+        "Show me 3 steps to begin.",
+        "Define this simply, then expand."
+      ],
+      "coaching_enabled": false,
+      "prompt_history_enabled": false,
+      "brand_tag": "Powered by Prompt Solicitation Layer™"
+    },
+    "apprentice": {
+      "name": "Apprentice Tier",
+      "max_starters_per_session": 5,
+      "max_response_length": 300,
+      "response_style": "guided",
+      "clarifiers": ["goal", "detail", "level", "teaching"],
+      "starter_prompts": [
+        "Walk me through this step-by-step.",
+        "Give me the basics first, then details.",
+        "Show me an example, then explain how to apply it.",
+        "What are the key points I need to know?",
+        "Help me understand the foundation before we go deeper."
+      ],
+      "coaching_enabled": true,
+      "coaching_style": "gentle_training",
+      "prompt_history_enabled": false,
+      "brand_tag": "Powered by Prompt Solicitation Layer™"
+    },
+    "regent": {
+      "name": "Regent Tier", 
+      "max_starters_per_session": "unlimited",
+      "max_response_length": 600,
+      "response_style": "detailed",
+      "clarifiers": ["goal", "detail", "decision", "level", "teaching"],
+      "starter_prompts": [
+        "Give me the complete framework.",
+        "Show me advanced techniques.",
+        "Compare different approaches and recommend the best.",
+        "Break this down into actionable components.",
+        "Teach me the principles behind this.",
+        "What would an expert focus on here?"
+      ],
+      "coaching_enabled": true,
+      "coaching_style": "persona_tailored",
+      "coaching_examples": {
+        "sophia": "Here's a more elegant way to frame that question...",
+        "vanessa": "Try asking it like this for better results...",
+        "aurora": "Let me optimize that query for you..."
+      },
+      "prompt_save_enabled": true,
+      "prompt_history_enabled": false,
+      "brand_tag": "Powered by Prompt Solicitation Layer™ — Regent Access"
+    },
+    "sovereign": {
+      "name": "Sovereign Tier",
+      "max_starters_per_session": "unlimited", 
+      "max_response_length": "unlimited",
+      "response_style": "collaborative",
+      "clarifiers": ["goal", "detail", "decision", "level", "teaching", "context", "output_format"],
+      "starter_prompts": [
+        "Let's explore this comprehensively.",
+        "Design a complete strategy with me.",
+        "Analyze all angles and implications.",
+        "Create a master framework for this domain.",
+        "What are the cutting-edge approaches?",
+        "Help me innovate beyond current methods.",
+        "Let's build something entirely new."
+      ],
+      "coaching_enabled": true,
+      "coaching_style": "collaborative",
+      "coaching_mode": "partnership",
+      "prompt_save_enabled": true,
+      "prompt_history_enabled": true,
+      "voice_text_toggle": true,
+      "searchable_history": true,
+      "brand_tag": "Powered by Prompt Solicitation Layer™ — Sovereign Mode"
+    }
+  },
+  "persona_coaching": {
+    "sophia": {
+      "style": "elegant_wisdom",
+      "coaching_prefix": "Let me help you refine that inquiry...",
+      "examples": [
+        "Instead of asking 'how', try 'what principles guide...'",
+        "Consider framing this as 'what wisdom tradition suggests...'",
+        "A more thoughtful approach might be 'what deeper understanding...'"
+      ]
+    },
+    "vanessa": {
+      "style": "direct_results",
+      "coaching_prefix": "Here's how to get what you really want...",
+      "examples": [
+        "Cut to the chase: 'what's the fastest way to...'",
+        "Be specific: 'show me exactly how to...'",
+        "Get real results: 'what actually works for...'"
+      ]
+    },
+    "aurora": {
+      "style": "futuristic_optimization",
+      "coaching_prefix": "Let me optimize that query for maximum insight...",
+      "examples": [
+        "Enhance your request: 'design an advanced system for...'",
+        "Think bigger: 'what cutting-edge approach could...'",
+        "Unlock innovation: 'how might we revolutionize...'"
+      ]
+    }
+  },
+  "tracking_events": [
+    "prompt_mechanism_triggered",
+    "prompt_starter_selected", 
+    "prompt_coaching_delivered",
+    "prompt_saved",
+    "prompt_history_searched",
+    "response_length_capped",
+    "deep_dive_requested"
+  ]
+}
