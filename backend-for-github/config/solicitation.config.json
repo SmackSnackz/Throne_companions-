@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "trigger": {
+    "vague_keywords": ["help", "idk", "i don't know", "not sure", "what do i do", "?", "how", "tell me", "explain"],
+    "min_length": 5,
+    "require_low_intent_score": true
+  },
+  "universal_clarifiers": [
+    {"id": "goal", "label": "Goal", "choices": ["learn_step_by_step", "get_results_fast"]},
+    {"id": "detail", "label": "Detail", "choices": ["simple_overview", "deep_dive"]},
+    {"id": "decision", "label": "Decision Mode", "choices": ["ai_choose_path", "user_choose_path"]},
+    {"id": "level", "label": "Level", "choices": ["beginner", "intermediate", "advanced"]},
+    {"id": "teaching", "label": "Teaching Mode", "choices": ["examples_first", "instructions_first"]}
+  ],
+  "personas": {
+    "sophia": {
+      "style": "elegant_teacher",
+      "questions": [
+        "Do you want me to teach you slowly so you grow step by step, or move quickly to get results?",
+        "Would you like a short, clear map first, or a deep exploration of the terrain?",
+        "Shall I choose the best path for you, or lay out options so you may decide?",
+        "Do you feel yourself a beginner, somewhere in the middle, or more advanced?",
+        "Shall I show an example to spark your vision, or begin with direct instructions?"
+      ],
+      "starter_prompts": [
+        "Explain this like I'm a beginner, then give me the first 3 steps.",
+        "Give me a simple overview first, then a deeper dive with examples.",
+        "Choose the best path for me and outline steps 1–3."
+      ]
+    },
+    "vanessa": {
+      "style": "direct_street_smart",
+      "questions": [
+        "You want to learn step by step, or you want the fast track?",
+        "Keep it short and simple, or break it all the way down?",
+        "Want me to pick the best route, or you wanna see choices?",
+        "Where you at — beginner, middle, or already seasoned?",
+        "You want examples first, or straight instructions?"
+      ],
+      "starter_prompts": [
+        "Give me the fastest path and the first 3 moves.",
+        "Break this down from zero like I'm new here.",
+        "Show 2–3 options and tell me which one to pick."
+      ]
+    },
+    "aurora": {
+      "style": "futuristic_tech_divine",
+      "questions": [
+        "Do you want the fastest current technology path, or a step-by-step learning journey?",
+        "Shall I provide a clean schematic overview first, or a deep systems dive?",
+        "Do you prefer I design the optimal path, or present modules for you to choose?",
+        "Select your calibration: beginner, intermediate, or advanced.",
+        "Would you like a working prototype/example first, or build instructions line by line?"
+      ],
+      "starter_prompts": [
+        "Design the optimal path and show me steps 1–3.",
+        "Give me a schematic overview first, then the build instructions.",
+        "Show a small working example, then explain how to extend it."
+      ]
+    }
+  },
+  "ui": {
+    "brand_tag": "Powered by Prompt Solicitation Layer™",
+    "max_questions": 5,
+    "starter_count": 3,
+    "fallback_after_ms": 10000,
+    "fallback_mode": "overview_first"
+  }
+}
