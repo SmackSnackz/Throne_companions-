@@ -26,7 +26,8 @@ COPY requirements.txt .
 # Install Python dependencies
 # Includes EmergentIntegrations from the private index
 # ------------------------------------------------------------
-RUN pip install --no-cache-dir -r requirements.txt && \
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir emergentintegrations \
     --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
 
