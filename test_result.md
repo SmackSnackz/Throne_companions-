@@ -240,6 +240,18 @@ backend:
         agent: "testing"
         comment: "MEMORY + CHAT INTEGRATION FULLY TESTED: ✅ Memory injection working in /api/chat endpoint - summaries retrieved based on tier retention policies. ✅ Chat messages stored in both chat_messages and chat_history collections simultaneously. ✅ Session completion workflow tested end-to-end with memory summary generation. ✅ Tier-based memory retention verified (Novice: 3, Apprentice: 10, Regent: 50, Sovereign: unlimited). ✅ Existing chat functionality preserved - message counting, admin bypass, upgrade CTAs all working. ✅ Event tracking integrated - message_sent, session_started, session_ended, memory_system_used events tracked. Complete integration working perfectly."
 
+  - task: "Backend Extraction for GitHub Repository"
+    implemented: true
+    working: true
+    file: "throne_companions_backend/"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "BACKEND EXTRACTION COMPLETE: Successfully extracted all backend files to standalone structure at /app/throne_companions_backend/. Includes all 25+ backend files, fixed emergentintegrations dependency, created deployment configs (Docker, Render.com, docker-compose), comprehensive documentation, installation/startup scripts, and testing utilities. Setup verification passes 6/6 tests. Ready for GitHub repository and independent deployment."
+
 frontend:
   - task: "Tier selection button click handlers"
     implemented: true
