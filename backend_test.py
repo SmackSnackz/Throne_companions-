@@ -626,17 +626,6 @@ async def main():
 if __name__ == "__main__":
     exit_code = asyncio.run(main())
     sys.exit(exit_code)
-                print(f"   Response: {response.text[:200]}...")
-
-            return success, response.json() if response.headers.get('content-type', '').startswith('application/json') else response.text
-
-        except Exception as e:
-            print(f"❌ Failed - Error: {str(e)}")
-            return False, {}
-
-    def test_api_root(self):
-        """Test API root endpoint"""
-        return self.run_test("API Root", "GET", "", 200)
 
     def test_get_tiers(self):
         """Test getting tier configuration data"""
