@@ -626,8 +626,6 @@ async def main():
 if __name__ == "__main__":
     exit_code = asyncio.run(main())
     sys.exit(exit_code)
-
-    def test_get_tiers(self):
         """Test getting tier configuration data"""
         success, response = self.run_test("Get Tiers", "GET", "tiers", 200)
         
