@@ -1,0 +1,64 @@
+# Exact Commands to Push Backend to GitHub
+# Copy and paste these commands one by one
+
+# Step 1: Navigate to extracted backend directory
+cd /app/backend_extracted
+
+# Step 2: Initialize Git repository
+git init
+
+# Step 3: Configure Git (replace with your info)
+git config user.name "Your Name"
+git config user.email "your.email@example.com"
+
+# Step 4: Add all files
+git add .
+
+# Step 5: Create initial commit
+git commit -m "Initial commit: Throne Companions Backend for Render deployment"
+
+# Step 6: Create repository on GitHub first, then run:
+# (Replace YOUR_USERNAME with your GitHub username)
+# (Replace throne-companions-backend with your repo name if different)
+
+git remote add origin https://github.com/YOUR_USERNAME/throne-companions-backend.git
+
+# Step 7: Set main branch
+git branch -M main
+
+# Step 8: Push to GitHub
+git push -u origin main
+
+# If authentication fails, use Personal Access Token:
+# 1. Go to GitHub.com → Settings → Developer settings → Personal access tokens
+# 2. Generate new token with 'repo' scope
+# 3. When prompted for password, paste the token
+
+# Alternative: Push with token in URL
+# git push https://YOUR_TOKEN@github.com/YOUR_USERNAME/throne-companions-backend.git main
+
+# ============================================
+# After First Push - Future Updates
+# ============================================
+
+# Make changes, then:
+git add .
+git commit -m "Description of changes"
+git push origin main
+
+# ============================================
+# Troubleshooting
+# ============================================
+
+# If remote already exists:
+git remote remove origin
+# Then add it again with Step 6
+
+# Check remote URL:
+git remote -v
+
+# Check branch:
+git branch
+
+# Check status:
+git status
