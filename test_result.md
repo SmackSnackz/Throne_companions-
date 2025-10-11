@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implement Memory System and Mixpanel Event Tracking: 1. Create chat history storage and memory summarization system, 2. Implement tier-based memory injection, 3. Add Mixpanel event tracking for user actions, 4. Test complete integration with existing chat functionality"
+user_problem_statement: "Complete backend extraction for separate GitHub repository: 1. Resolve ModuleNotFoundError: No module named 'emergentintegrations' during Render.com deployment, 2. Create a dedicated GitHub repository containing only the backend files, 3. Push the extracted backend files to the user's specified GitHub repository"
 
 backend:
   - task: "Tier system API endpoints"
