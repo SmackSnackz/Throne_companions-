@@ -23,7 +23,7 @@ git push -u origin main
    - **Root Directory**: /
    - **Build Command**: 
      ```
-     cd frontend && yarn install && yarn build && cd ../backend && pip install -r requirements.txt
+     cd frontend && yarn install && yarn build && cd ../backend && pip install --upgrade pip setuptools wheel && pip install --no-cache-dir --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/ -r requirements.txt
      ```
    - **Start Command**: 
      ```
